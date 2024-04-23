@@ -1,5 +1,5 @@
 import streamlit as st
-from streamlit_leaflet import st_leaflet
+import folium
 
 def main():
     # Title of the app
@@ -9,8 +9,14 @@ def main():
     with open("rayli_sistem_istasyon_poi_verisi.geojson", "r") as f:
         geojson_data = f.read()
 
-    # Display the map with GeoJSON data
-    st_leaflet(geojson_data)
+    # Create a folium map centered at a location of your choice
+    m = folium.Map(location=[41.0058, 28.8817], zoom_start=10)
+
+    # Add GeoJSON data to the map
+    folium.GeoJson(geojson_data).add_to(m)
+
+    # Display the map using folium_static
+    st.folium_static(m)
 
 if __name__ == "__main__":
     main()
