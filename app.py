@@ -1,63 +1,38 @@
 import streamlit as st
-import pydeck as pdk
-import json
-import math
+import pandas as pd
+import numpy as np
 
-# Load the GeoJSON file containing station data
-with open("rayli_sistem_istasyon_poi_verisi.geojson", "r", encoding="utf-8") as f:
-    station_data = json.load(f)
-
-# Extract unique station names
-station_names = list(set(feature["properties"]["ISTASYON"] for feature in station_data["features"]))
-
-# Allow user to select station(s)
-selected_stations = st.multiselect("Select station(s)", station_names)
-
-# Initialize default values for center latitude, center longitude, and zoom
-center_lat = 41.0082
-center_lon = 28.9784
-zoom = 10
-
-# Filter station data for the selected station(s)
-filtered_station_data = {
-    "type": "FeatureCollection",
-    "features": [feature for feature in station_data["features"] if feature["properties"]["ISTASYON"] in selected_stations]
+# Generate data for metro station locations
+metro_stations = {
+    "Station": ["Station 1", "Station 2", "Station 3"],
+    "Latitude": [41.0082, 41.0447, 41.0175],
+    "Longitude": [28.9784, 28.9576, 28.9754],
 }
 
-# Calculate the extent of selected stations if there are selected stations
-if selected_stations:
-    if len(selected_stations) == 1:
-        # If only one station is selected, set zoom level to 17
-        zoom = 17
-    else:
-        # If multiple stations are selected, calculate extent and zoom to it
-        min_lat = min(feature["geometry"]["coordinates"][1] for feature in filtered_station_data["features"])
-        max_lat = max(feature["geometry"]["coordinates"][1] for feature in filtered_station_data["features"])
-        min_lon = min(feature["geometry"]["coordinates"][0] for feature in filtered_station_data["features"])
-        max_lon = max(feature["geometry"]["coordinates"][0] for feature in filtered_station_data["features"])
-        
-        # Calculate the center and zoom level based on the extent
-        center_lat = (min_lat + max_lat) / 2
-        center_lon = (min_lon + max_lon) / 2
-        lat_distance = max_lat - min_lat
-        lon_distance = max_lon - min_lon
-        zoom = math.floor(12 - math.log2(max(lat_distance, lon_distance) * 111.32)) + 1  # Adjust for padding
+# Generate data for hourly user counts
+station_names = metro_stations["Station"]
+num_stations = len(station_names)
+hours = np.arange(24)
 
-# Create a PyDeck map
-map = pdk.Deck(
-    map_style="mapbox://styles/mapbox/light-v9",
-    initial_view_state=pdk.ViewState(latitude=center_lat, longitude=center_lon, zoom=zoom),
-    layers=[
-        pdk.Layer(
-            "ScatterplotLayer",
-            data=filtered_station_data["features"],
-            get_position="[geometry.coordinates[0], geometry.coordinates[1]]",
-            get_radius=100,
-            get_fill_color=[255, 0, 0],
-            pickable=True
-        )
-    ]
-)
+# Repeat station names, latitude, and longitude for each hour
+stations = np.repeat(station_names, len(hours))
+latitudes = np.repeat(metro_stations["Latitude"], len(hours))
+longitudes = np.repeat(metro_stations["Longitude"], len(hours))
 
-# Display the map using Streamlit
-st.pydeck_chart(map)
+# Generate random user counts for each hour and station
+user_counts = np.random.randint(100, 1000, size=len(station_names) * len(hours))
+
+# Create the data dictionary
+data = {
+    "Station": stations,
+    "lat": latitudes,  # Change 'Latitude' to 'lat'
+    "lon": longitudes,  # Change 'Longitude' to 'lon'
+    "Hour": np.tile(hours, num_stations),
+    "User_Count": user_counts
+}
+
+# Convert data dictionary to DataFrame
+df = pd.DataFrame(data)
+
+# Display map
+st.map(df)
