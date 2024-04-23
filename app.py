@@ -32,3 +32,4 @@ map = pdk.Deck(
 
 # Display the map using Streamlit
 st.pydeck_chart(map)
+ 
