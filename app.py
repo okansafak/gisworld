@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
+import pydeck as pdk
 
 # Generate data for metro station locations
 metro_stations = {
@@ -34,5 +35,36 @@ data = {
 # Convert data dictionary to DataFrame
 df = pd.DataFrame(data)
 
-# Display map
-st.map(df)
+# Allow user to select multiple stations
+selected_stations = st.multiselect("Select Stations", station_names, default=station_names)
+
+# Filter the DataFrame based on selected stations
+filtered_df = df[df['Station'].isin(selected_stations)]
+
+# Set default viewport if no stations are selected
+if filtered_df.empty:
+    viewport = {"latitude": 41.0082, "longitude": 28.9784, "zoom": 10}
+else:
+    # Create a PyDeck scatter plot layer for the markers
+    layer = pdk.Layer(
+        "ScatterplotLayer",
+        filtered_df,
+        get_position='[lon, lat]',
+        get_radius=1000,
+        get_fill_color=[0, 0, 255],
+        pickable=True
+    )
+
+    # Set the map viewport to center on the first station
+    viewport = pdk.data_utils.compute_view(filtered_df[['lon', 'lat']])
+
+# Create the map
+map = pdk.Deck(
+    map_style="mapbox://styles/mapbox/light-v9",
+    initial_view_state=viewport,
+    layers=[layer] if not filtered_df.empty else [],
+    tooltip={"text": "{Station}\nHour: {Hour}\nUser Count: {User_Count}"}
+)
+
+# Display the map using Streamlit
+st.pydeck_chart(map)
