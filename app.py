@@ -27,7 +27,7 @@ patches, texts, _ = ax.pie(data["Count"], labels=data["HAT_TURU"], autopct="%1.1
 ax.axis("equal")  # Equal aspect ratio ensures that pie is drawn as a circle.
 
 # Convert pie chart patches to labels for Streamlit selectbox
-labels = [f"{p.get_label()} ({int(data.loc[i, 'Count'])})" for i, p in enumerate(patches)]
+labels = [f"{data.loc[i, 'HAT_TURU']} ({int(data.loc[i, 'Count'])})" for i in range(len(data))]
 
 # Allow user to select HAT_TURU
 selected_hat_turu = st.selectbox("Select HAT_TURU", labels)
