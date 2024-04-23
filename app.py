@@ -29,12 +29,17 @@ if filtered_station_data["features"]:
         max_lon = max(max_lon, lon)
         max_lat = max(max_lat, lat)
     
-    # Calculate the center and zoom level based on the extent
-    center_lat = (min_lat + max_lat) / 2
-    center_lon = (min_lon + max_lon) / 2
+    # Calculate the distance in meters
     lat_distance = max_lat - min_lat
     lon_distance = max_lon - min_lon
-    zoom = math.floor(12 - math.log2(max(lat_distance, lon_distance) * 111.32)) + 1  # Adjust for padding
+    target_distance = 512  # Target distance in pixels at maximum zoom level
+    
+    # Calculate the zoom level based on the distance
+    zoom_lat = math.floor(12 - math.log2(lat_distance / target_distance)) + 1
+    zoom_lon = math.floor(12 - math.log2(lon_distance / target_distance)) + 1
+    
+    # Set the zoom level to the minimum of the two calculated zoom levels
+    zoom = min(zoom_lat, zoom_lon)
 else:
     # Default view if no points are filtered
     center_lat, center_lon, zoom = 41.0082, 28.9784, 10
