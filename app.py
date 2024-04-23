@@ -15,7 +15,7 @@ map = pdk.Deck(
             "ScatterplotLayer",
             data=station_data["features"],
             get_position="[geometry.coordinates[0], geometry.coordinates[1]]",
-            get_radius=100,
+            get_radius=200,
             get_fill_color=[255, 0, 0],
             pickable=True
         )
