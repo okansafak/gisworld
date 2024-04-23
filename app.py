@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import json
 import pydeck as pdk
+import matplotlib.pyplot as plt
 
 # Load the GeoJSON file containing station data
 with open("rayli_sistem_istasyon_poi_verisi.geojson", "r", encoding="utf-8") as f:
@@ -20,11 +21,14 @@ percentages = (hat_turu_counts / hat_turu_counts.sum()) * 100
 # Create a DataFrame with counts and percentages
 data = pd.DataFrame({"Count": hat_turu_counts, "Percentage": percentages})
 
-# Plot the pie chart using streamlit.pyplot
-st.write("## Distribution of HAT_TURU")
-fig, ax = st.pyplot()
+# Plot the pie chart using matplotlib
+fig, ax = plt.subplots()
 ax.pie(data["Count"], labels=data.index, autopct="%1.1f%%", startangle=90)
 ax.axis("equal")  # Equal aspect ratio ensures that pie is drawn as a circle.
+
+# Display the pie chart using Streamlit
+st.write("## Distribution of HAT_TURU")
+st.pyplot(fig)
 
 # Display the data table
 st.write("## HAT_TURU Data", data)
