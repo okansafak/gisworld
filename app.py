@@ -35,8 +35,15 @@ if filtered_station_data["features"]:
     target_distance = 512  # Target distance in pixels at maximum zoom level
     
     # Calculate the zoom level based on the distance
-    zoom_lat = math.floor(12 - math.log2(lat_distance / target_distance)) + 1
-    zoom_lon = math.floor(12 - math.log2(lon_distance / target_distance)) + 1
+    if lat_distance != 0 and target_distance != 0:
+        zoom_lat = math.floor(12 - math.log2(lat_distance / target_distance)) + 1
+    else:
+        zoom_lat = 10  # Default zoom level
+    
+    if lon_distance != 0 and target_distance != 0:
+        zoom_lon = math.floor(12 - math.log2(lon_distance / target_distance)) + 1
+    else:
+        zoom_lon = 10  # Default zoom level
     
     # Set the zoom level to the minimum of the two calculated zoom levels
     zoom = min(zoom_lat, zoom_lon)
