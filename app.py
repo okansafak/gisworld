@@ -29,7 +29,8 @@ map = pdk.Deck(
             get_position="geometry.coordinates",
             get_radius=100,
             get_fill_color=[255, 0, 0],
-            pickable=True
+            pickable=True,
+            tooltip={"text": "{ISTASYON}\n{PROJE_ADI}\n{PROJE_ASAMA}\n{HAT_TURU}\n{MUDURLUK}"}
         )
     ]
 )
