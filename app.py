@@ -24,3 +24,6 @@ map = pdk.Deck(
 
 # Display the map using Streamlit
 st.pydeck_chart(map)
+
+# Display the GeoJSON data in a table
+st.write("GeoJSON Data", station_data)
