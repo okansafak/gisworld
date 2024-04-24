@@ -32,7 +32,7 @@ view_state = pdk.ViewState(
     longitude=28.9784,
     zoom=10,
     pitch=40.5,
-)
+) 
 
 # Pydeck Haritasını oluştur
 r = pdk.Deck(layers=[geojson_layer, popup_layer], initial_view_state=view_state, tooltip={"text": "Bu bir nokta"})
