@@ -81,6 +81,13 @@ def main():
                     'Mesaj': [message]}
             df = pd.DataFrame(data)
 
+            # Varolan verileri oku veya yeni bir dosya oluştur
+            try:
+                existing_data = pd.read_excel("basvurular.xlsx")
+                df = pd.concat([existing_data, df], ignore_index=True)
+            except FileNotFoundError:
+                pass
+
             # Veri çerçevesini Excel dosyasına yaz
             df.to_excel("basvurular.xlsx", index=False)
 
@@ -91,17 +98,43 @@ def main():
     # Eğitim İçeriği
     st.sidebar.header("Eğitim İçeriği")
     st.sidebar.subheader("Hafta 1: Coğrafi Bilgi Sistemleri (GIS) Temelleri")
-    st.sidebar.text("Gün 1: Giriş ve Temel Kavramlar")
-    st.sidebar.text("Gün 2: Temel GIS Yazılımları")
-    st.sidebar.text("Gün 3: Coğrafi Veri Toplama ve Dönüşüm")
+    st.sidebar.write("""
+    - Gün 1: Giriş ve Temel Kavramlar
+        - Coğrafi Bilgi Sistemleri (GIS) Nedir?
+        - Coğrafi Verilerin Temel Kavramları: Nokta, Çizgi, Alan
+        - Koordinat Sistemleri ve Coğrafi Referans Sistemleri (CRS)
+    - Gün 2: Temel GIS Yazılımları
+        - QGIS ve Temel Fonksiyonlar
+        - Diğer GIS Yazılımları ve Uygulamaları
+    - Gün 3: Coğrafi Veri Toplama ve Dönüşüm
+        - Coğrafi Veri Toplama Yöntemleri: Sahada Veri Toplama, Veri Kaynakları
+        - Veri Formatları: Shapefile, GeoJSON, KML
+        - Coğrafi Veri Dönüşümleri ve Projeksiyonlar
+    """)
     st.sidebar.subheader("Hafta 2: Coğrafi Veri Analizi ve Modelleme")
-    st.sidebar.text("Gün 4: Raster Analizler")
-    st.sidebar.text("Gün 5: Vector Analizler")
+    st.sidebar.write("""
+    - Gün 4: Raster Analizler
+        - Raster Veri Yapısı ve Temel İşlemler
+        - Raster Referanslama
+        - Raster Veri Analizi: Bakı , Eğim..
+    - Gün 5: Vector Analizler
+        - Vector Veri Yapısı ve Temel İşlemler
+        - Vector Veri Analizi: Mekansal İlişkiler, Tampon, Kesişim ..
+    """)
     st.sidebar.subheader("Hafta 3: Mekansal Veri İşleme ve Uygulamaları")
-    st.sidebar.text("Gün 6: Mekansal Veri İşleme ve Python")
-    st.sidebar.text("Gün 7: Web Harita Uygulamaları")
+    st.sidebar.write("""
+    - Gün 7: Geoserver ve Web Harita Uygulamaları
+        - Geoserver Nedir ve Nasıl Kurulur?
+        - Veri Yayınlama ve Servis Oluşturma
+        - Temel Harita Uygulamaları Geliştirme Leaflet ve OpenLayers ile 
+    """)
     st.sidebar.subheader("Hafta 4: Uygulamalar ve Projeler")
-    st.sidebar.text("Gün 8: Coğrafi Veri Görselleştirme ve Proje Sunumları")
+    st.sidebar.write("""
+    - Gün 8: Coğrafi Veri Görselleştirme ve Proje Sunumları
+        - Harita Tasarımı İlkeleri
+        - Grafikler ve Grafiksel Gösterimler
+        - Katılımcıların Temel Seviye Proje Sunumları ve Değerlendirmeleri
+    """)
 
 if __name__ == "__main__":
     main()
