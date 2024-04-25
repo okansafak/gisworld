@@ -1,25 +1,42 @@
 import streamlit as st
+import pandas as pd
 
 def main():
     st.title("Geospatial Data Sciences Bootcamp Başvuru Formu")
     st.write("Lütfen aşağıdaki formu doldurarak başvurunuzu tamamlayın.")
 
-    # Ad Soyad
-    full_name = st.text_input("Adınız Soyadınız")
+    # KVKK Metni
+    st.markdown("Kisisel Verilerin Korunması Kanunu (KVKK) kapsamında verilerinizin gizliliği önemlidir. "
+                "Bu form aracılığıyla gönderilen bilgiler sadece başvurunuzu değerlendirmek amacıyla kullanılacaktır.")
 
-    # E-posta
-    email = st.text_input("E-posta Adresiniz")
+    # Onay Kutusu
+    kvkk_approval = st.checkbox("KVKK metnini okudum ve kabul ediyorum.")
 
-    # Telefon Numarası
-    phone = st.text_input("Telefon Numaranız")
+    if kvkk_approval:
+        # Ad Soyad
+        full_name = st.text_input("Adınız Soyadınız")
 
-    # Mesaj
-    message = st.text_area("Mesajınız", height=150)
+        # E-posta
+        email = st.text_input("E-posta Adresiniz")
 
-    # Başvuru Gönderme Butonu
-    if st.button("Başvuru Gönder"):
-        # Burada başvuru işlemleri yapılabilir, örneğin veritabanına kaydedilebilir.
-        st.success("Başvurunuz başarıyla gönderildi! Teşekkür ederiz.")
+        # Telefon Numarası
+        phone = st.text_input("Telefon Numaranız")
+
+        # Mesaj
+        message = st.text_area("Mesajınız", height=150)
+
+        # Başvuru Gönderme Butonu
+        if st.button("Başvuru Gönder"):
+            # Başvuru bilgilerini bir veri çerçevesine aktar
+            data = {'Ad Soyad': [full_name], 'E-posta': [email], 'Telefon': [phone], 'Mesaj': [message]}
+            df = pd.DataFrame(data)
+
+            # Veri çerçevesini Excel dosyasına yaz
+            df.to_excel("basvurular.xlsx", index=False)
+            
+            st.success("Başvurunuz başarıyla gönderildi! Teşekkür ederiz.")
+    else:
+        st.warning("Başvurunuz için KVKK metnini kabul etmelisiniz.")
 
 if __name__ == "__main__":
     main()
