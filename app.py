@@ -9,11 +9,14 @@ def is_valid_email(email):
 
 def is_valid_phone(phone):
     # Telefon numarasının geçerli olup olmadığını kontrol et
-    phone_regex = r'^0[1-9][0-9]{2}[ ]?[0-9]{3}[ ]?[0-9]{2}[ ]?[0-9]{2}$'
+    phone_regex = r'^0\d{10}$'
     return re.match(phone_regex, phone)
 
 def main():
     st.title("Geospatial Data Sciences Bootcamp Başvuru Formu")
+    st.sidebar.title("Eğitim İçeriği")
+    # Eğitim içeriği buraya eklenecek...
+
     st.write("Lütfen aşağıdaki formu doldurarak başvurunuzu tamamlayın.")
 
     # KVKK Metni ve Onay Kutusu
@@ -34,9 +37,9 @@ def main():
             st.warning("Lütfen geçerli bir e-posta adresi giriniz.")
 
         # Telefon Numarası
-        phone = st.text_input("Telefon Numaranız")
+        phone = st.text_input("Telefon Numaranız", max_chars=11)
         if phone and not is_valid_phone(phone):
-            st.warning("Lütfen geçerli bir telefon numarası giriniz. Örnek: 0XXX XXX XX XX")
+            st.warning("Lütfen geçerli bir telefon numarası giriniz. Örnek: 05XXXXXXXXX")
 
         # Eğitim Durumu
         st.header("Eğitim Durumu")
@@ -93,7 +96,7 @@ def main():
             # Veri çerçevesini Excel dosyasına yaz
             df.to_excel("basvurular.xlsx", index=False)
 
-            st.success("Başvurunuz başarıyla gönderildi! Teşekkür ederiz.")
+            st.success("Başvurunuz başarıyla gönderildi! Teşekkür ederiz. Başvurunuz alınmıştır. Eğitimde görüşmek üzere.")
     else:
         st.warning("Başvurunuz için KVKK metnini kabul etmelisiniz.")
 
