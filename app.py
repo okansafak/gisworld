@@ -10,7 +10,7 @@ def is_valid_email(email):
 
 def is_valid_phone(phone):
     # Telefon numarasının geçerli olup olmadığını kontrol et
-    phone_regex = r'^[0-9]+$'  # Sadece numerik değerleri kabul et
+    phone_regex = r'^0[0-9]+$'  # Başında 0 değeri olacak ve sadece numerik değerleri kabul edecek
     return re.match(phone_regex, phone)
 
 def main():
@@ -80,7 +80,7 @@ def main():
         # Başvuru Gönderme Butonu
         if st.button("Başvuru Gönder"):
             # Başvuru bilgilerini bir veri çerçevesine aktar
-            data = {'Ad Soyad': [full_name], 'E-posta': [email], 'Telefon': [phone],
+            data = {'Ad Soyad': [full_name], 'E-posta': [email], 'Telefon': ["0" + phone],
                     'Üniversite': [university], 'Bölüm': [department], 'Sınıf': [grade],
                     'Çalıştığı Kurum': [company], 'Programlama Dilleri': [", ".join(programming_languages)],
                     'Kullandığı Programlar': [", ".join(gis_software)],
