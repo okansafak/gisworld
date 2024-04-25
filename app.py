@@ -26,26 +26,26 @@ def main():
     if kvkk_approval:
         # Kişisel Bilgiler
         st.header("Kişisel Bilgiler")
-        full_name = st.text_input("Adınız Soyadınız", required=True)
+        full_name = st.text_input("Adınız Soyadınız")
 
         # E-posta
-        email = st.text_input("E-posta Adresiniz", required=True)
+        email = st.text_input("E-posta Adresiniz")
         if email and not is_valid_email(email):
             st.warning("Lütfen geçerli bir e-posta adresi giriniz.")
 
         # Telefon Numarası
-        phone = st.text_input("Telefon Numaranız", required=True)
+        phone = st.text_input("Telefon Numaranız")
         if phone and not is_valid_phone(phone):
             st.warning("Lütfen geçerli bir telefon numarası giriniz. Örnek: 0XXX XXX XX XX")
 
         # Eğitim Durumu
         st.header("Eğitim Durumu")
-        graduate_status = st.radio("Mezun Durumu", ("Mezun", "Mezun Değil"), index=1)
+        graduate_status = st.radio("Mezun Durumu", ("Mezun", "Mezun Değil"))
 
         if graduate_status == "Mezun":
-            university = st.text_input("Mezun Olduğunuz Üniversite", required=True)
-            department = st.text_input("Mezun Olduğunuz Bölüm", required=True)
-            grade = st.text_input("Mezuniyet Dereceniz", required=True)
+            university = st.text_input("Mezun Olduğunuz Üniversite")
+            department = st.text_input("Mezun Olduğunuz Bölüm")
+            grade = st.text_input("Mezuniyet Dereceniz")
             employment_status = st.radio("Çalışma Durumu", ("Çalışıyor", "Çalışmıyor"))
 
             if employment_status == "Çalışıyor":
@@ -53,14 +53,21 @@ def main():
             else:
                 company = None
         else:
-            university = st.text_input("Üniversite", required=True)
-            department = st.text_input("Bölüm", required=True)
-            grade = st.text_input("Sınıf", required=True)
+            university = st.text_input("Üniversite")
+            department = st.text_input("Bölüm")
+            grade = st.text_input("Sınıf")
             company = None
 
         # Programlama Bilgileri
         st.header("Programlama Bilgileri")
-        programming_languages = st.multiselect("Kullandığınız Programlama Dilleri", ["Python", "R", "JavaScript", "C++", "Java", "Diğer"])
+        programming_languages = st.multiselect("Kullandığınız Programlama Dilleri", 
+                                               ["Python", "R", "JavaScript", "C++", "Java", "Diğer"],
+                                               default=["Python", "R"])
+
+        # Kullandığı Programlar
+        st.header("Kullandığınız Coğrafi Bilgi Sistemleri ve Veritabanları")
+        gis_software = st.multiselect("Kullandığınız Coğrafi Bilgi Sistemleri ve Veritabanları", 
+                                      ["QGIS", "ArcGIS", "PostgreSQL", "MapInfo", "Diğer"])
 
         # Mesaj
         st.header("Eklemek İstediğiniz Mesaj")
@@ -72,6 +79,7 @@ def main():
             data = {'Ad Soyad': [full_name], 'E-posta': [email], 'Telefon': [phone],
                     'Üniversite': [university], 'Bölüm': [department], 'Sınıf': [grade],
                     'Çalıştığı Kurum': [company], 'Programlama Dilleri': [", ".join(programming_languages)],
+                    'Kullandığı Programlar': [", ".join(gis_software)],
                     'Mesaj': [message]}
             df = pd.DataFrame(data)
 
