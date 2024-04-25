@@ -10,7 +10,7 @@ def is_valid_email(email):
 
 def is_valid_phone(phone):
     # Telefon numarasının geçerli olup olmadığını kontrol et
-    phone_regex = r'^0[0-9]+$'  # Başında 0 değeri olacak ve sadece numerik değerleri kabul edecek
+    phone_regex = r'^05[0-9]{9}$'  # Başında "05" değeri olacak ve toplam 11 karakter olacak
     return re.match(phone_regex, phone)
 
 def main():
@@ -38,9 +38,12 @@ def main():
             st.warning("Lütfen geçerli bir e-posta adresi giriniz.")
 
         # Telefon Numarası
-        phone = st.text_input("Telefon Numaranız", max_chars=11)
+        phone = st.text_input("Telefon Numaranız", value="05", max_chars=11)
         if phone and not is_valid_phone(phone):
-            st.warning("Lütfen sadece numerik değerler giriniz.")
+            st.warning("Lütfen geçerli bir telefon numarası giriniz.")
+
+        # Linkedin URL (Opsiyonel)
+        linkedin_url = st.text_input("Linkedin Profil URL")
 
         # Eğitim Durumu
         st.header("Eğitim Durumu")
@@ -80,8 +83,8 @@ def main():
         # Başvuru Gönderme Butonu
         if st.button("Başvuru Gönder"):
             # Başvuru bilgilerini bir veri çerçevesine aktar
-            data = {'Ad Soyad': [full_name], 'E-posta': [email], 'Telefon': ["0" + phone],
-                    'Üniversite': [university], 'Bölüm': [department], 'Sınıf': [grade],
+            data = {'Ad Soyad': [full_name], 'E-posta': [email], 'Telefon': [phone],
+                    'Linkedin URL': [linkedin_url], 'Üniversite': [university], 'Bölüm': [department], 'Sınıf': [grade],
                     'Çalıştığı Kurum': [company], 'Programlama Dilleri': [", ".join(programming_languages)],
                     'Kullandığı Programlar': [", ".join(gis_software)],
                     'Mesaj': [message]}
