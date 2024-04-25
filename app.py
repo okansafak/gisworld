@@ -61,13 +61,13 @@ def main():
         # Programlama Bilgileri
         st.header("Programlama Bilgileri")
         programming_languages = st.multiselect("Kullandığınız Programlama Dilleri", 
-                                               ["Python", "R", "JavaScript", "C++", "Java", "Diğer"],
-                                               default=["Python", "R"])
+                                               ["SQL","Python", "R", "JavaScript", "C++", "Java", "Diğer"],
+                                               default=[])
 
         # Kullandığı Programlar
         st.header("Kullandığınız Coğrafi Bilgi Sistemleri ve Veritabanları")
         gis_software = st.multiselect("Kullandığınız Coğrafi Bilgi Sistemleri ve Veritabanları", 
-                                      ["QGIS", "ArcGIS", "PostgreSQL", "MapInfo", "Diğer"])
+                                      ["QGIS", "ArcGIS","NetCAD","Autocad" "PostgreSQL", "MapInfo", "Diğer"])
 
         # Mesaj
         st.header("Eklemek İstediğiniz Mesaj")
