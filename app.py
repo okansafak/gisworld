@@ -1,5 +1,16 @@
 import streamlit as st
 import pandas as pd
+import re
+
+def is_valid_email(email):
+    # E-posta adresinin geçerli olup olmadığını kontrol et
+    email_regex = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+    return re.match(email_regex, email)
+
+def is_valid_phone(phone):
+    # Telefon numarasının geçerli olup olmadığını kontrol et
+    phone_regex = r'^0[1-9][0-9]{2}[ ]?[0-9]{3}[ ]?[0-9]{2}[ ]?[0-9]{2}$'
+    return re.match(phone_regex, phone)
 
 def main():
     st.title("Geospatial Data Sciences Bootcamp Başvuru Formu")
@@ -15,18 +26,26 @@ def main():
     if kvkk_approval:
         # Kişisel Bilgiler
         st.header("Kişisel Bilgiler")
-        full_name = st.text_input("Adınız Soyadınız")
-        email = st.text_input("E-posta Adresiniz")
-        phone = st.text_input("Telefon Numaranız")
+        full_name = st.text_input("Adınız Soyadınız", required=True)
+
+        # E-posta
+        email = st.text_input("E-posta Adresiniz", required=True)
+        if email and not is_valid_email(email):
+            st.warning("Lütfen geçerli bir e-posta adresi giriniz.")
+
+        # Telefon Numarası
+        phone = st.text_input("Telefon Numaranız", required=True)
+        if phone and not is_valid_phone(phone):
+            st.warning("Lütfen geçerli bir telefon numarası giriniz. Örnek: 0XXX XXX XX XX")
 
         # Eğitim Durumu
         st.header("Eğitim Durumu")
-        graduate_status = st.radio("Mezun Durumu", ("Mezun", "Mezun Değil"))
+        graduate_status = st.radio("Mezun Durumu", ("Mezun", "Mezun Değil"), index=1)
 
         if graduate_status == "Mezun":
-            university = st.text_input("Mezun Olduğunuz Üniversite")
-            department = st.text_input("Mezun Olduğunuz Bölüm")
-            grade = st.text_input("Mezuniyet Dereceniz")
+            university = st.text_input("Mezun Olduğunuz Üniversite", required=True)
+            department = st.text_input("Mezun Olduğunuz Bölüm", required=True)
+            grade = st.text_input("Mezuniyet Dereceniz", required=True)
             employment_status = st.radio("Çalışma Durumu", ("Çalışıyor", "Çalışmıyor"))
 
             if employment_status == "Çalışıyor":
@@ -34,9 +53,9 @@ def main():
             else:
                 company = None
         else:
-            university = st.text_input("Üniversite")
-            department = st.text_input("Bölüm")
-            grade = st.text_input("Sınıf")
+            university = st.text_input("Üniversite", required=True)
+            department = st.text_input("Bölüm", required=True)
+            grade = st.text_input("Sınıf", required=True)
             company = None
 
         # Programlama Bilgileri
