@@ -24,26 +24,28 @@ def main():
     if kvkk_approval:
         # Kişisel Bilgiler
         st.header("Kişisel Bilgiler")
-        full_name = st.text_input("Adınız Soyadınız", required=True)
+        full_name = st.text_input("Adınız Soyadınız")
+        if not full_name:
+            st.warning("Adınız soyadınızı giriniz.")
 
         # E-posta
-        email = st.text_input("E-posta Adresiniz", required=True)
+        email = st.text_input("E-posta Adresiniz")
         if email and not is_valid_email(email):
             st.warning("Lütfen geçerli bir e-posta adresi giriniz.")
 
         # Telefon Numarası
-        phone = st.text_input("Telefon Numaranız", required=True)
+        phone = st.text_input("Telefon Numaranız")
         if phone and not is_valid_phone(phone):
             st.warning("Lütfen geçerli bir telefon numarası giriniz. Örnek: 0XXX XXX XX XX")
 
         # Eğitim Durumu
         st.header("Eğitim Durumu")
-        graduate_status = st.radio("Mezun Durumu", ("Mezun", "Mezun Değil"), index=1)
+        graduate_status = st.radio("Mezun Durumu", ("Mezun", "Mezun Değil"))
 
         if graduate_status == "Mezun":
-            university = st.text_input("Mezun Olduğunuz Üniversite", required=True)
-            department = st.text_input("Mezun Olduğunuz Bölüm", required=True)
-            grade = st.text_input("Mezuniyet Dereceniz", required=True)
+            university = st.text_input("Mezun Olduğunuz Üniversite")
+            department = st.text_input("Mezun Olduğunuz Bölüm")
+            grade = st.text_input("Mezuniyet Dereceniz")
             employment_status = st.radio("Çalışma Durumu", ("Çalışıyor", "Çalışmıyor"))
 
             if employment_status == "Çalışıyor":
@@ -51,9 +53,9 @@ def main():
             else:
                 company = None
         else:
-            university = st.text_input("Üniversite", required=True)
-            department = st.text_input("Bölüm", required=True)
-            grade = st.text_input("Sınıf", required=True)
+            university = st.text_input("Üniversite")
+            department = st.text_input("Bölüm")
+            grade = st.text_input("Sınıf")
             company = None
 
         # Programlama Bilgileri
@@ -94,47 +96,6 @@ def main():
             st.success("Başvurunuz başarıyla gönderildi! Teşekkür ederiz.")
     else:
         st.warning("Başvurunuz için KVKK metnini kabul etmelisiniz.")
-
-    # Eğitim İçeriği
-    st.sidebar.header("Eğitim İçeriği")
-    st.sidebar.subheader("Hafta 1: Coğrafi Bilgi Sistemleri (GIS) Temelleri")
-    st.sidebar.write("""
-    - Gün 1: Giriş ve Temel Kavramlar
-        - Coğrafi Bilgi Sistemleri (GIS) Nedir?
-        - Coğrafi Verilerin Temel Kavramları: Nokta, Çizgi, Alan
-        - Koordinat Sistemleri ve Coğrafi Referans Sistemleri (CRS)
-    - Gün 2: Temel GIS Yazılımları
-        - QGIS ve Temel Fonksiyonlar
-        - Diğer GIS Yazılımları ve Uygulamaları
-    - Gün 3: Coğrafi Veri Toplama ve Dönüşüm
-        - Coğrafi Veri Toplama Yöntemleri: Sahada Veri Toplama, Veri Kaynakları
-        - Veri Formatları: Shapefile, GeoJSON, KML
-        - Coğrafi Veri Dönüşümleri ve Projeksiyonlar
-    """)
-    st.sidebar.subheader("Hafta 2: Coğrafi Veri Analizi ve Modelleme")
-    st.sidebar.write("""
-    - Gün 4: Raster Analizler
-        - Raster Veri Yapısı ve Temel İşlemler
-        - Raster Referanslama
-        - Raster Veri Analizi: Bakı , Eğim..
-    - Gün 5: Vector Analizler
-        - Vector Veri Yapısı ve Temel İşlemler
-        - Vector Veri Analizi: Mekansal İlişkiler, Tampon, Kesişim ..
-    """)
-    st.sidebar.subheader("Hafta 3: Mekansal Veri İşleme ve Uygulamaları")
-    st.sidebar.write("""
-    - Gün 7: Geoserver ve Web Harita Uygulamaları
-        - Geoserver Nedir ve Nasıl Kurulur?
-        - Veri Yayınlama ve Servis Oluşturma
-        - Temel Harita Uygulamaları Geliştirme Leaflet ve OpenLayers ile 
-    """)
-    st.sidebar.subheader("Hafta 4: Uygulamalar ve Projeler")
-    st.sidebar.write("""
-    - Gün 8: Coğrafi Veri Görselleştirme ve Proje Sunumları
-        - Harita Tasarımı İlkeleri
-        - Grafikler ve Grafiksel Gösterimler
-        - Katılımcıların Temel Seviye Proje Sunumları ve Değerlendirmeleri
-    """)
 
 if __name__ == "__main__":
     main()
