@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
 import re
-import os
+import json
 
 def is_valid_email(email):
     # E-posta adresinin geçerli olup olmadığını kontrol et
@@ -13,11 +13,13 @@ def is_valid_phone(phone):
     phone_regex = r'^05[0-9]{9}$'  # Başında "05" değeri olacak ve toplam 11 karakter olacak
     return re.match(phone_regex, phone)
 
+def write_to_json(data):
+    with open("basvurular.json", "a") as f:
+        json.dump(data, f, ensure_ascii=False)
+        f.write("\n")
+
 def main():
     st.title("Geospatial Data Sciences Bootcamp Başvuru Formu")
-    st.sidebar.title("Eğitim İçeriği")
-    # Eğitim içeriği buraya eklenecek...
-
     st.write("Lütfen aşağıdaki formu doldurarak başvurunuzu tamamlayın.")
 
     # KVKK Metni ve Onay Kutusu
@@ -82,23 +84,20 @@ def main():
 
         # Başvuru Gönderme Butonu
         if st.button("Başvuru Gönder"):
-            # Başvuru bilgilerini bir veri çerçevesine aktar
-            data = {'Ad Soyad': [full_name], 'E-posta': [email], 'Telefon': [phone],
-                    'Linkedin URL': [linkedin_url], 'Üniversite': [university], 'Bölüm': [department], 'Sınıf': [grade],
-                    'Çalıştığı Kurum': [company], 'Programlama Dilleri': [", ".join(programming_languages)],
-                    'Kullandığı Programlar': [", ".join(gis_software)],
-                    'Mesaj': [message]}
-            df = pd.DataFrame(data)
+            # Başvuru bilgilerini bir sözlükte topla
+            data = {'Ad Soyad': full_name, 'E-posta': email, 'Telefon': phone,
+                    'Linkedin URL': linkedin_url, 'Üniversite': university, 'Bölüm': department, 'Sınıf': grade,
+                    'Çalıştığı Kurum': company, 'Programlama Dilleri': programming_languages,
+                    'Kullandığı Programlar': gis_software, 'Mesaj': message}
 
-            # CSV dosyası oluştur ve veri çerçevesini CSV'ye yaz
-            if not os.path.exists("basvurular.csv"):
-                with open("basvurular.csv", "w", encoding="utf-8") as file:
-                    df.to_csv(file, index=False)
-            else:
-                df.to_csv("basvurular.csv", mode="a", index=False, header=False)
-
-            st.success("Başvurunuz başarıyla gönderildi! Teşekkür ederiz. Başvurunuz alınmıştır. Eğitimde görüşmek üzere.")
-            st.stop()  # Formu kapat
+            try:
+                # Başvuru bilgilerini JSON dosyasına yaz
+                write_to_json(data)
+                st.success("Başvurunuz başarıyla gönderildi! Teşekkür ederiz. "
+                           "Başvurunuz alınmıştır. Eğitimde görüşmek üzere.")
+                st.stop()  # Formu kapat
+            except Exception as e:
+                st.error(f"Bir hata oluştu: {e}")
 
     else:
         st.warning("Başvurunuz için KVKK metnini kabul etmelisiniz.")
