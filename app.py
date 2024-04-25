@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import re
+import os
 
 def is_valid_email(email):
     # E-posta adresinin geçerli olup olmadığını kontrol et
@@ -86,15 +87,12 @@ def main():
                     'Mesaj': [message]}
             df = pd.DataFrame(data)
 
-            # Varolan verileri oku veya yeni bir dosya oluştur
-            try:
-                existing_data = pd.read_excel("basvurular.xlsx")
-                df = pd.concat([existing_data, df], ignore_index=True)
-            except FileNotFoundError:
-                pass
-
-            # Veri çerçevesini Excel dosyasına yaz
-            df.to_excel("basvurular.xlsx", index=False)
+            # CSV dosyası oluştur ve veri çerçevesini CSV'ye yaz
+            if not os.path.exists("basvurular.csv"):
+                with open("basvurular.csv", "w", encoding="utf-8") as file:
+                    df.to_csv(file, index=False)
+            else:
+                df.to_csv("basvurular.csv", mode="a", index=False, header=False)
 
             st.success("Başvurunuz başarıyla gönderildi! Teşekkür ederiz. Başvurunuz alınmıştır. Eğitimde görüşmek üzere.")
             st.stop()  # Formu kapat
