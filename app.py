@@ -1,25 +1,25 @@
 import streamlit as st
-import json
-from streamlit_folium import folium_static
-import folium
 
-# Read the GeoJSON file
-with open("istanbul.geojson", "r") as f:
-    geojson_data = json.load(f)
+def main():
+    st.title("Geospatial Data Sciences Bootcamp Başvuru Formu")
+    st.write("Lütfen aşağıdaki formu doldurarak başvurunuzu tamamlayın.")
 
-# Extract coordinates and properties
-features = geojson_data["features"]
-coordinates = [(feature["geometry"]["coordinates"][1], feature["geometry"]["coordinates"][0]) for feature in features]
-properties = [feature["properties"] for feature in features]
+    # Ad Soyad
+    full_name = st.text_input("Adınız Soyadınız")
 
-# Create a Streamlit map
-st.title("Points on Map")
-m = folium.Map(location=[41, 29], zoom_start=10)  # Set initial location and zoom level
+    # E-posta
+    email = st.text_input("E-posta Adresiniz")
 
-# Add points to the map
-for coord, prop in zip(coordinates, properties):
-    popup = folium.Popup("<b>{}</b><br>{}".format(prop["KURUM_ADI"], prop["ADRES"]), parse_html=True)
-    folium.Marker(location=coord, popup=popup).add_to(m)
+    # Telefon Numarası
+    phone = st.text_input("Telefon Numaranız")
 
-# Display the map
-folium_static(m)
+    # Mesaj
+    message = st.text_area("Mesajınız", height=150)
+
+    # Başvuru Gönderme Butonu
+    if st.button("Başvuru Gönder"):
+        # Burada başvuru işlemleri yapılabilir, örneğin veritabanına kaydedilebilir.
+        st.success("Başvurunuz başarıyla gönderildi! Teşekkür ederiz.")
+
+if __name__ == "__main__":
+    main()
