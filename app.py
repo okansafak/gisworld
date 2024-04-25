@@ -16,36 +16,34 @@ def main():
     st.title("Geospatial Data Sciences Bootcamp Başvuru Formu")
     st.write("Lütfen aşağıdaki formu doldurarak başvurunuzu tamamlayın.")
 
-    # KVKK Metni
-    st.markdown("Kisisel Verilerin Korunması Kanunu (KVKK) kapsamında verilerinizin gizliliği önemlidir. "
-                "Bu form aracılığıyla gönderilen bilgiler sadece başvurunuzu değerlendirmek amacıyla kullanılacaktır.")
-
-    # Onay Kutusu
-    kvkk_approval = st.checkbox("KVKK metnini okudum ve kabul ediyorum.")
+    # KVKK Metni ve Onay Kutusu
+    kvkk_approval = st.checkbox("Kisisel Verilerin Korunması Kanunu (KVKK) kapsamında verilerinizin gizliliği önemlidir. "
+                                "Bu form aracılığıyla gönderilen bilgiler sadece başvurunuzu değerlendirmek amacıyla kullanılacaktır. "
+                                "KVKK metnini okudum ve kabul ediyorum.")
 
     if kvkk_approval:
         # Kişisel Bilgiler
         st.header("Kişisel Bilgiler")
-        full_name = st.text_input("Adınız Soyadınız")
+        full_name = st.text_input("Adınız Soyadınız", required=True)
 
         # E-posta
-        email = st.text_input("E-posta Adresiniz")
+        email = st.text_input("E-posta Adresiniz", required=True)
         if email and not is_valid_email(email):
             st.warning("Lütfen geçerli bir e-posta adresi giriniz.")
 
         # Telefon Numarası
-        phone = st.text_input("Telefon Numaranız")
+        phone = st.text_input("Telefon Numaranız", required=True)
         if phone and not is_valid_phone(phone):
             st.warning("Lütfen geçerli bir telefon numarası giriniz. Örnek: 0XXX XXX XX XX")
 
         # Eğitim Durumu
         st.header("Eğitim Durumu")
-        graduate_status = st.radio("Mezun Durumu", ("Mezun", "Öğrenci"))
+        graduate_status = st.radio("Mezun Durumu", ("Mezun", "Mezun Değil"), index=1)
 
         if graduate_status == "Mezun":
-            university = st.text_input("Mezun Olduğunuz Üniversite")
-            department = st.text_input("Mezun Olduğunuz Bölüm")
-            grade = st.text_input("Mezuniyet Dereceniz")
+            university = st.text_input("Mezun Olduğunuz Üniversite", required=True)
+            department = st.text_input("Mezun Olduğunuz Bölüm", required=True)
+            grade = st.text_input("Mezuniyet Dereceniz", required=True)
             employment_status = st.radio("Çalışma Durumu", ("Çalışıyor", "Çalışmıyor"))
 
             if employment_status == "Çalışıyor":
@@ -53,21 +51,21 @@ def main():
             else:
                 company = None
         else:
-            university = st.text_input("Üniversite")
-            department = st.text_input("Bölüm")
-            grade = st.text_input("Sınıf")
+            university = st.text_input("Üniversite", required=True)
+            department = st.text_input("Bölüm", required=True)
+            grade = st.text_input("Sınıf", required=True)
             company = None
 
         # Programlama Bilgileri
         st.header("Programlama Bilgileri")
         programming_languages = st.multiselect("Kullandığınız Programlama Dilleri", 
-                                               ["SQL","Python", "R", "JavaScript", "C++", "Java", "Diğer"],
-                                               default=[])
+                                               ["Python", "R", "SQL", "JavaScript", "C++", "Java", "Diğer"],
+                                               default=["Python", "R"])
 
         # Kullandığı Programlar
-        st.header("Kullandığınız Programlar ve Veri Tabanları")
+        st.header("Kullandığınız Coğrafi Bilgi Sistemleri ve Veritabanları")
         gis_software = st.multiselect("Kullandığınız Coğrafi Bilgi Sistemleri ve Veritabanları", 
-                                      ["QGIS", "ArcGIS","NetCAD","Autocad" "PostgreSQL", "MapInfo", "Diğer"])
+                                      ["QGIS", "ArcGIS", "NetCAD", "Autocad", "PostgreSQL", "MapInfo", "Diğer"])
 
         # Mesaj
         st.header("Eklemek İstediğiniz Mesaj")
@@ -89,6 +87,21 @@ def main():
             st.success("Başvurunuz başarıyla gönderildi! Teşekkür ederiz.")
     else:
         st.warning("Başvurunuz için KVKK metnini kabul etmelisiniz.")
+
+    # Eğitim İçeriği
+    st.sidebar.header("Eğitim İçeriği")
+    st.sidebar.subheader("Hafta 1: Coğrafi Bilgi Sistemleri (GIS) Temelleri")
+    st.sidebar.text("Gün 1: Giriş ve Temel Kavramlar")
+    st.sidebar.text("Gün 2: Temel GIS Yazılımları")
+    st.sidebar.text("Gün 3: Coğrafi Veri Toplama ve Dönüşüm")
+    st.sidebar.subheader("Hafta 2: Coğrafi Veri Analizi ve Modelleme")
+    st.sidebar.text("Gün 4: Raster Analizler")
+    st.sidebar.text("Gün 5: Vector Analizler")
+    st.sidebar.subheader("Hafta 3: Mekansal Veri İşleme ve Uygulamaları")
+    st.sidebar.text("Gün 6: Mekansal Veri İşleme ve Python")
+    st.sidebar.text("Gün 7: Web Harita Uygulamaları")
+    st.sidebar.subheader("Hafta 4: Uygulamalar ve Projeler")
+    st.sidebar.text("Gün 8: Coğrafi Veri Görselleştirme ve Proje Sunumları")
 
 if __name__ == "__main__":
     main()
