@@ -40,7 +40,7 @@ def main():
 
         # Eğitim Durumu
         st.header("Eğitim Durumu")
-        graduate_status = st.radio("Mezun Durumu", ("Mezun", "Mezun Değil"))
+        graduate_status = st.radio("Mezun Durumu", ("Mezun", "Öğrenci"))
 
         if graduate_status == "Mezun":
             university = st.text_input("Mezun Olduğunuz Üniversite")
@@ -65,7 +65,7 @@ def main():
                                                default=[])
 
         # Kullandığı Programlar
-        st.header("Kullandığınız Coğrafi Bilgi Sistemleri ve Veritabanları")
+        st.header("Kullandığınız Programlar ve Veri Tabanları")
         gis_software = st.multiselect("Kullandığınız Coğrafi Bilgi Sistemleri ve Veritabanları", 
                                       ["QGIS", "ArcGIS","NetCAD","Autocad" "PostgreSQL", "MapInfo", "Diğer"])
 
