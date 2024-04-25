@@ -9,7 +9,7 @@ def is_valid_email(email):
 
 def is_valid_phone(phone):
     # Telefon numarasının geçerli olup olmadığını kontrol et
-    phone_regex = r'^0\d{10}$'
+    phone_regex = r'^[0-9]+$'  # Sadece numerik değerleri kabul et
     return re.match(phone_regex, phone)
 
 def main():
@@ -39,7 +39,7 @@ def main():
         # Telefon Numarası
         phone = st.text_input("Telefon Numaranız", max_chars=11)
         if phone and not is_valid_phone(phone):
-            st.warning("Lütfen geçerli bir telefon numarası giriniz. Örnek: 05XXXXXXXXX")
+            st.warning("Lütfen sadece numerik değerler giriniz.")
 
         # Eğitim Durumu
         st.header("Eğitim Durumu")
@@ -97,6 +97,8 @@ def main():
             df.to_excel("basvurular.xlsx", index=False)
 
             st.success("Başvurunuz başarıyla gönderildi! Teşekkür ederiz. Başvurunuz alınmıştır. Eğitimde görüşmek üzere.")
+            st.stop()  # Formu kapat
+
     else:
         st.warning("Başvurunuz için KVKK metnini kabul etmelisiniz.")
 
