@@ -1,3 +1,20 @@
+import json
+import streamlit as st
+import geopandas as gpd
+import pandas as pd
+import plotly.express as px
+
+# Okullar GeoJSON dosyasını yükle
+with open("okullar.geojson", encoding="utf-8") as f:
+    okullar_geojson = json.load(f)
+
+# İl ve ilçe listesi JSON dosyasını yükle
+with open("il_ilce_listesi.json", encoding="utf-8") as f:
+    il_ilce_listesi = json.load(f)
+
+# Geopandas DataFrame'i oluştur
+okullar_gdf = gpd.GeoDataFrame.from_features(okullar_geojson["features"])
+
 # Streamlit uygulamasını oluştur
 st.title("Okul Bilgi Uygulaması")
 
