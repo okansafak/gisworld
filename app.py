@@ -1,6 +1,7 @@
 import json
 import streamlit as st
 import geopandas as gpd
+import pandas as pd
 
 # Okullar GeoJSON dosyasını yükle
 with open("okullar.geojson", encoding="utf-8") as f:
@@ -17,29 +18,24 @@ okullar_gdf = gpd.GeoDataFrame.from_features(okullar_geojson["features"])
 st.title("Okul Bilgi Uygulaması")
 
 # Filtreler için sidebar oluştur
-with st.sidebar.expander("İstatistikler", expanded=True):
-    # İl seçimini sidebar'a ekle
-    secili_il = st.selectbox("İl Seçin", ["Tümü"] + list(il_ilce_listesi.keys()))
+st.sidebar.title("Filtreler")
 
-    # İlçe seçimini sidebar'a ekle
-    if secili_il != "Tümü":
-        secili_ilce = st.selectbox("İlçe Seçin", ["Tümü"] + il_ilce_listesi[secili_il])
-    else:
-        secili_ilce = st.selectbox("İlçe Seçin", ["Tümü"])
+# İl seçimini sidebar'a ekle
+secili_il = st.sidebar.selectbox("İl Seçin", list(il_ilce_listesi.keys()))
 
-    # KURUM_TUR_ADI seçimini sidebar'a ekle
-    kurum_turleri = okullar_gdf["KURUM_TUR_ADI"].unique()
-    secili_kurum_turu = st.selectbox("Okul Türü Seçin", ["Tümü"] + list(kurum_turleri))
+# İlçe seçimini sidebar'a ekle
+secili_ilce = st.sidebar.selectbox("İlçe Seçin", ["Tümü"] + il_ilce_listesi[secili_il])
+
+# KURUM_TUR_ADI seçimini sidebar'a ekle
+kurum_turleri = okullar_gdf["KURUM_TUR_ADI"].unique()
+secili_kurum_turu = st.sidebar.selectbox("Okul Türü Seçin", ["Tümü"] + list(kurum_turleri))
 
 # Seçilen il ve ilçeye göre okulları filtrele
-if secili_il == "Tümü":
-    filtrelenmis_okullar = okullar_gdf.copy()
+if secili_ilce == "Tümü":
+    filtrelenmis_okullar = okullar_gdf[okullar_gdf["IL_ADI"] == secili_il]
 else:
-    if secili_ilce == "Tümü":
-        filtrelenmis_okullar = okullar_gdf[okullar_gdf["IL_ADI"] == secili_il]
-    else:
-        filtrelenmis_okullar = okullar_gdf[(okullar_gdf["IL_ADI"] == secili_il) & 
-                                           (okullar_gdf["ILCE_ADI"] == secili_ilce)]
+    filtrelenmis_okullar = okullar_gdf[(okullar_gdf["IL_ADI"] == secili_il) & 
+                                       (okullar_gdf["ILCE_ADI"] == secili_ilce)]
 
 # KURUM_TUR_ADI'na göre filtrele
 if secili_kurum_turu != "Tümü":
@@ -50,27 +46,25 @@ if not filtrelenmis_okullar.empty:
     st.write(f"Seçilen filtrelerle toplam {len(filtrelenmis_okullar)} okul bulunmaktadır.")
     
     # İl/ilçe ve okul türü istatistikleri
-    with st.sidebar.expander("Genel İstatistikler", expanded=True):
-        # En az okul sayısı olan il/ilçe
-        en_az_okul_il_ilce = okullar_gdf["IL_ADI"].value_counts().idxmin()
-        en_az_okul_sayısı_il_ilce = okullar_gdf["IL_ADI"].value_counts().min()
-        st.write(f"En az okul sayısı olan il/ilçe: **{en_az_okul_il_ilce}** ({en_az_okul_sayısı_il_ilce} okul)")
-
-        # En fazla okul sayısı olan il/ilçe
-        en_fazla_okul_il_ilce = okullar_gdf["IL_ADI"].value_counts().idxmax()
-        en_fazla_okul_sayısı_il_ilce = okullar_gdf["IL_ADI"].value_counts().max()
-        st.write(f"En fazla okul sayısı olan il/ilçe: **{en_fazla_okul_il_ilce}** ({en_fazla_okul_sayısı_il_ilce} okul)")
-
-        # En fazla okul türü
-        en_fazla_okul_türü = okullar_gdf["KURUM_TUR_ADI"].value_counts().idxmax()
-        en_fazla_okul_türü_sayısı = okullar_gdf["KURUM_TUR_ADI"].value_counts().max()
-        st.write(f"En fazla okul türü: **{en_fazla_okul_türü}** ({en_fazla_okul_türü_sayısı} okul)")
-
-        # En az okul türü
-        en_az_okul_türü = okullar_gdf["KURUM_TUR_ADI"].value_counts().idxmin()
-        en_az_okul_türü_sayısı = okullar_gdf["KURUM_TUR_ADI"].value_counts().min()
-        st.write(f"En az okul türü: **{en_az_okul_türü}** ({en_az_okul_türü_sayısı} okul)")
-
+    st.sidebar.subheader("İstatistikler")
+    
+    if secili_ilce != "Tümü":
+        ilce_okul_sayisi = len(okullar_gdf[okullar_gdf["ILCE_ADI"] == secili_ilce])
+        st.sidebar.write(f"Seçilen İlçedeki Toplam Okul Sayısı: **{ilce_okul_sayisi}**")
+    
+    if secili_il != "Tümü":
+        il_okul_sayisi = len(okullar_gdf[okullar_gdf["IL_ADI"] == secili_il])
+        st.sidebar.write(f"Seçilen İldeki Toplam Okul Sayısı: **{il_okul_sayisi}**")
+    
+    if secili_kurum_turu != "Tümü":
+        en_fazla_okul_turu = filtrelenmis_okullar["KURUM_TUR_ADI"].value_counts().idxmax()
+        en_fazla_okul_sayisi = filtrelenmis_okullar["KURUM_TUR_ADI"].value_counts().max()
+        st.sidebar.write(f"En Fazla Okul Türü: **{en_fazla_okul_turu}** ({en_fazla_okul_sayisi} okul)")
+        
+        en_az_okul_turu = filtrelenmis_okullar["KURUM_TUR_ADI"].value_counts().idxmin()
+        en_az_okul_sayisi = filtrelenmis_okullar["KURUM_TUR_ADI"].value_counts().min()
+        st.sidebar.write(f"En Az Okul Türü: **{en_az_okul_turu}** ({en_az_okul_sayisi} okul)")
+    
     # Grafik: Okul türlerine göre dağılım
     st.subheader("Okul Türü Dağılımı")
     okul_turu_dağılımı = filtrelenmis_okullar["KURUM_TUR_ADI"].value_counts()
