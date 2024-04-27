@@ -26,19 +26,19 @@ secili_il = st.sidebar.selectbox("İl Seçin", list(il_ilce_listesi.keys()))
 secili_ilce = st.sidebar.selectbox("İlçe Seçin", ["Tümü"] + il_ilce_listesi[secili_il])
 
 # KURUM_TUR_ADI seçimini sidebar'a ekle
-kurum_turleri = okullar_gdf["properties"]["KURUM_TUR_ADI"].unique()
+kurum_turleri = okullar_gdf["KURUM_TUR_ADI"].unique()
 secili_kurum_turu = st.sidebar.selectbox("Okul Türü Seçin", ["Tümü"] + list(kurum_turleri))
 
 # Seçilen il ve ilçeye göre okulları filtrele
 if secili_ilce == "Tümü":
-    filtrelenmis_okullar = okullar_gdf[okullar_gdf["properties"]["IL_ADI"] == secili_il]
+    filtrelenmis_okullar = okullar_gdf[okullar_gdf["IL_ADI"] == secili_il]
 else:
-    filtrelenmis_okullar = okullar_gdf[(okullar_gdf["properties"]["IL_ADI"] == secili_il) & 
-                                       (okullar_gdf["properties"]["ILCE_ADI"] == secili_ilce)]
+    filtrelenmis_okullar = okullar_gdf[(okullar_gdf["IL_ADI"] == secili_il) & 
+                                       (okullar_gdf["ILCE_ADI"] == secili_ilce)]
 
 # KURUM_TUR_ADI'na göre filtrele
 if secili_kurum_turu != "Tümü":
-    filtrelenmis_okullar = filtrelenmis_okullar[filtrelenmis_okullar["properties"]["KURUM_TUR_ADI"] == secili_kurum_turu]
+    filtrelenmis_okullar = filtrelenmis_okullar[filtrelenmis_okullar["KURUM_TUR_ADI"] == secili_kurum_turu]
 
 # Filtrelenmiş okulları göster
 if not filtrelenmis_okullar.empty:
