@@ -8,7 +8,7 @@ st.set_page_config(page_title="Demo Page",
                    layout="wide")
 
 # Load the GeoJSON file containing station data
-with open("istanbul.geojson", "r", encoding="utf-8") as f:
+with open("okullar.geojson", "r", encoding="utf-8") as f:
     station_data = json.load(f)
 
 # Convert GeoJSON features to DataFrame
