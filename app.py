@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import geopandas as gpd
+from streamlit_folium import folium_static
 import folium
 
 # Başlık
@@ -21,7 +22,8 @@ if uploaded_file is not None:
     m = folium.Map(location=[gdf.geometry.centroid.y.mean(), gdf.geometry.centroid.x.mean()], zoom_start=10)
 
     # GeoDataFrame'i haritaya ekleme
-    folium.GeoJson(gdf).add_to(m)
+    for _, row in gdf.iterrows():
+        folium.GeoJson(row.geometry).add_to(m)
 
     # Haritayı görüntüleme
-    st.write(m._repr_html_(), unsafe_allow_html=True)
+    folium_static(m)
