@@ -2,6 +2,7 @@ import json
 import streamlit as st
 import geopandas as gpd
 import pandas as pd
+import plotly.express as px
 
 # Okullar GeoJSON dosyasını yükle
 with open("okullar.geojson", encoding="utf-8") as f:
@@ -68,12 +69,16 @@ if not filtrelenmis_okullar.empty:
     # Grafik: Okul türlerine göre dağılım
     st.subheader("Okul Türü Dağılımı")
     okul_turu_dağılımı = filtrelenmis_okullar["KURUM_TUR_ADI"].value_counts()
-    st.bar_chart(okul_turu_dağılımı)
+    fig1 = px.bar(okul_turu_dağılımı, x=okul_turu_dağılımı.index, y=okul_turu_dağılımı.values)
+    fig1.update_layout(xaxis_title="Okul Türü", yaxis_title="Okul Sayısı", title="Okul Türü Dağılımı")
+    st.plotly_chart(fig1, use_container_width=True)
 
     # Grafik: İlçelerdeki okul sayıları
     st.subheader("İlçelerdeki Okul Sayıları")
     ilce_okul_sayıları = filtrelenmis_okullar["ILCE_ADI"].value_counts()
-    st.bar_chart(ilce_okul_sayıları)
+    fig2 = px.bar(ilce_okul_sayıları, x=ilce_okul_sayıları.index, y=ilce_okul_sayıları.values)
+    fig2.update_layout(xaxis_title="İlçe", yaxis_title="Okul Sayısı", title="İlçelerdeki Okul Sayıları")
+    st.plotly_chart(fig2, use_container_width=True)
 
     # Okulları tablo olarak göster
     st.dataframe(filtrelenmis_okullar.drop(columns='geometry'))  # Geometri sütununu göstermemek için
