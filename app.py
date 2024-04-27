@@ -51,33 +51,33 @@ if not filtrelenmis_okullar.empty:
     
     if secili_ilce != "Tümü":
         ilce_okul_sayisi = len(okullar_gdf[okullar_gdf["ILCE_ADI"] == secili_ilce])
-        st.sidebar.metric(label="Seçilen İlçedeki Toplam Okul Sayısı", value=ilce_okul_sayisi)
+        st.sidebar.write(f"Seçilen İlçedeki Toplam Okul Sayısı: **{ilce_okul_sayisi}**")
     
     if secili_il != "Tümü":
         il_okul_sayisi = len(okullar_gdf[okullar_gdf["IL_ADI"] == secili_il])
-        st.sidebar.metric(label="Seçilen İldeki Toplam Okul Sayısı", value=il_okul_sayisi)
+        st.sidebar.write(f"Seçilen İldeki Toplam Okul Sayısı: **{il_okul_sayisi}**")
     
     if secili_il != "Tümü":
         en_fazla_okul_turu = filtrelenmis_okullar["KURUM_TUR_ADI"].value_counts().idxmax()
         en_fazla_okul_sayisi = filtrelenmis_okullar["KURUM_TUR_ADI"].value_counts().max()
-        st.sidebar.metric(label="En Fazla Okul Türü", value=en_fazla_okul_sayisi, delta=0)
+        st.sidebar.write(f"En Fazla Okul Türü: **{en_fazla_okul_turu}** ({en_fazla_okul_sayisi} okul)")
         
         en_az_okul_turu = filtrelenmis_okullar["KURUM_TUR_ADI"].value_counts().idxmin()
         en_az_okul_sayisi = filtrelenmis_okullar["KURUM_TUR_ADI"].value_counts().min()
-        st.sidebar.metric(label="En Az Okul Türü", value=en_az_okul_sayisi, delta=0)
-
+        st.sidebar.write(f"En Az Okul Türü: **{en_az_okul_turu}** ({en_az_okul_sayisi} okul)")
+    
     # Grafik: Okul türlerine göre dağılım
     st.subheader("Okul Türü Dağılımı")
     okul_turu_dağılımı = filtrelenmis_okullar["KURUM_TUR_ADI"].value_counts()
-    fig1 = px.bar(okul_turu_dağılımı, x=okul_turu_dağılımı.index, y=okul_turu_dağılımı.values,
-                  labels={'x': 'Okul Türü', 'y': 'Okul Sayısı'}, title='Okul Türü Dağılımı')
+    fig1 = px.bar(okul_turu_dağılımı, x=okul_turu_dağılımı.index, y=okul_turu_dağılımı.values)
+    fig1.update_layout(xaxis_title="Okul Türü", yaxis_title="Okul Sayısı", title="Okul Türü Dağılımı")
     st.plotly_chart(fig1, use_container_width=True)
 
     # Grafik: İlçelerdeki okul sayıları
     st.subheader("İlçelerdeki Okul Sayıları")
     ilce_okul_sayıları = filtrelenmis_okullar["ILCE_ADI"].value_counts()
-    fig2 = px.bar(ilce_okul_sayıları, x=ilce_okul_sayıları.index, y=ilce_okul_sayıları.values,
-                  labels={'x': 'İlçe', 'y': 'Okul Sayısı'}, title='İlçelerdeki Okul Sayıları')
+    fig2 = px.bar(ilce_okul_sayıları, x=ilce_okul_sayıları.index, y=ilce_okul_sayıları.values)
+    fig2.update_layout(xaxis_title="İlçe", yaxis_title="Okul Sayısı", title="İlçelerdeki Okul Sayıları")
     st.plotly_chart(fig2, use_container_width=True)
 
     # Okulları tablo olarak göster
