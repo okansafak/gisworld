@@ -28,9 +28,10 @@ if uploaded_file is not None:
         "HeatmapLayer",
         data=gdf,
         get_position=["geometry.coordinates[0]", "geometry.coordinates[1]"],
-        opacity=0.8,
-        aggregation='"MEAN"',
-        get_weight=0.05
+        opacity=0.8,  # Opacity (transparency) of the heatmap layer
+        aggregation='"MEAN"',  # Aggregation method for data points within a radius
+        get_weight=1,  # Weight for each data point
+        radius_scale=20,  # Scaling factor for the radius of each data point
     )
 
     # Haritayı görüntüleme
