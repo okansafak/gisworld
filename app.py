@@ -5,33 +5,6 @@ import pandas as pd
 import plotly.express as px
 
 
-# Temayı ayarla
-st.set_page_config(layout="wide")  # Geniş bir düzen kullanılabilir
-
-# Tema seçimi
-st.sidebar.title("Tema Seçimi")
-selected_theme = st.sidebar.radio("Tema", ("Light", "Dark"))
-
-# Tema ayarları
-if selected_theme == "Dark":
-    st.markdown(
-        """
-        <style>
-        .reportview-container {
-            background: #272822;
-            color: #f8f9fa;
-        }
-        </style>
-        """,
-        unsafe_allow_html=True,
-    )
-    px.defaults.template = "plotly_dark"
-else:
-    px.defaults.template = None  # Default (light) tema kullanılıyor
-
-# Geri kalan kodlar buraya eklenecek
-# ...
-
 
 
 # Okullar GeoJSON dosyasını yükle
