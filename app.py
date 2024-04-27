@@ -10,8 +10,8 @@ def main():
     # İl ve ilçelerin verileri
     iller_ilceler = {}
     for index, row in okullar_data.iterrows():
-        il = row['IL']
-        ilce = row['ILCE']
+        il = row['IL_ADI']
+        ilce = row['ILCE_ADI']
         if il not in iller_ilceler:
             iller_ilceler[il] = []
         if ilce not in iller_ilceler[il]:
@@ -25,18 +25,6 @@ def main():
 
     # Seçilen ilin ilçelerini göster
     secilen_ilce = st.sidebar.selectbox("Bir ilçe seçin", secilen_ilceler)
-
-    # Seçilen il ve ilçeye göre veriyi filtrele
-    filtered_data = okullar_data[(okullar_data['IL'] == secilen_il) & (okullar_data['ILCE'] == secilen_ilce)]
-
-    # Sonuçları göster
-    st.subheader("Filtrelenmiş Veri Tablosu")
-    st.write(filtered_data)
-
-    # Veri analizi araçları
-    st.subheader("Veri Analizi Aracı: Toplamlar")
-    st.write("Toplam Okul Sayısı:", len(filtered_data))
-    st.write("Toplam Öğrenci Sayısı:", filtered_data['OGRENCI_SAY'].sum())
 
 if __name__ == "__main__":
     main()
