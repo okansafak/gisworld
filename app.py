@@ -38,11 +38,12 @@ else:
 custom_layer = pdk.Layer(
     "ScatterplotLayer",
     data=df_selection,
-    get_position="[properties.MERKEZ_Y, properties.MERKEZ_X]",
+    get_position="[properties.MERKEZ_X, properties.MERKEZ_Y]",  # Swap X and Y if necessary
     get_radius=200,
     get_fill_color=[255, 0, 0],
     pickable=True
 )
+
 
 # Create a PyDeck map
 map = pdk.Deck(
