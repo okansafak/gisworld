@@ -1,34 +1,55 @@
 import streamlit as st
 import pandas as pd
-import geopandas as gpd
-from streamlit_folium import folium_static
-from streamlit_leaflet import st_leaflet
+import json
+import pydeck as pdk
 
-# Veri yüklemesi
-@st.cache
-def load_data():
-    # Okulların GeoJSON dosyasını yükle
-    schools_gdf = gpd.read_file("turkiye.geojson")
-    return schools_gdf
+st.set_page_config(page_title="Demo Page",
+                   page_icon=":globe_showing_europe_africa:",
+                   layout="wide")
 
-schools_gdf = load_data()
+# Load the GeoJSON file containing station data
+with open("istanbul.geojson", "r", encoding="utf-8") as f:
+    station_data = json.load(f)
 
-# İl ve İlçe seçimi
-selected_province = st.sidebar.selectbox("İl Seçin", schools_gdf["IL_ADI"].unique())
-selected_districts = schools_gdf[schools_gdf["IL_ADI"] == selected_province]["ILCE_ADI"].unique()
-selected_district = st.sidebar.selectbox("İlçe Seçin", selected_districts)
+# Convert GeoJSON features to DataFrame
+features = station_data["features"]
+df = pd.json_normalize(features)
 
-# Seçilen il ve ilçeye göre veriyi filtrele
-filtered_schools = schools_gdf[(schools_gdf["IL_ADI"] == selected_province) & (schools_gdf["ILCE_ADI"] == selected_district)]
+st.sidebar.header("FILTERS")
+ilce = st.sidebar.multiselect(
+    "İlçe Seçiniz",
+    options=df["properties.ILCE_ADI"].unique(),  # Use unique values for options
+    default=None  # Default value is None
+)
 
-# Haritayı oluştur
-m = st_leaflet(width=800, height=600)
+# Filter DataFrame based on selected ilce if ilce is not empty
+if ilce:
+    df_selection = df[df["properties.ILCE_ADI"].isin(ilce)]
+    st.write("Filtered DataFrame", df_selection)
+else:
+    df_selection = df
 
-# Okul noktalarını haritaya ekle
-for idx, row in filtered_schools.iterrows():
-    popup_html = f"<b>Okul Adı:</b> {row['KURUM_ADI']}"
-    m.add_marker((row.geometry.y, row.geometry.x), popup=popup_html)
+# Define a custom layer for the map
+custom_layer = pdk.Layer(
+    "ScatterplotLayer",
+    data=df_selection,
+    get_position="[properties.MERKEZ_Y, properties.MERKEZ_X]",
+    get_radius=200,
+    get_fill_color=[255, 0, 0],
+    pickable=True
+)
 
-# Haritayı görüntüle
-st.subheader("Türkiye Genelinde Okulların Isı Haritası ve Noktaları")
-folium_static(m)
+# Create a PyDeck map
+map = pdk.Deck(
+    map_style="mapbox://styles/mapbox/light-v9",
+    initial_view_state=pdk.ViewState(latitude=41.0082, longitude=28.9784, zoom=10),
+    layers=[custom_layer]
+)
+
+# Display the map using Streamlit
+st.write("## Map")
+st.pydeck_chart(map)
+
+# Display filtered data if ilce is selected
+if ilce:
+    st.write("Filtered DataFrame", df_selection)
