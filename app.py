@@ -15,13 +15,10 @@ with open("okullar.geojson", "r", encoding="utf-8") as f:
 features = school_data["features"]
 df = pd.json_normalize(features)
 
-# Extract unique districts for the sidebar filter
-unique_ilce = df["properties.ILCE_ADI"].unique()
-
 # Sidebar for filters
 st.sidebar.header("FILTERS")
 il = st.sidebar.selectbox("İl Seçiniz", options=df["properties.IL_ADI"].unique())
-ilce = st.sidebar.multiselect("İlçe Seçiniz", options=unique_ilce)
+ilce = st.sidebar.multiselect("İlçe Seçiniz", options=df["properties.ILCE_ADI"].unique())
 
 # Filter DataFrame based on selected ilce and il if they are not empty
 if ilce:
@@ -38,17 +35,16 @@ else:
 custom_layer = pdk.Layer(
     "ScatterplotLayer",
     data=df_selection,
-    get_position="[properties.MERKEZ_X, properties.MERKEZ_Y]",  # Swap X and Y if necessary
+    get_position="[properties.geometry.coordinates[1], properties.geometry.coordinates[0]]",
     get_radius=200,
     get_fill_color=[255, 0, 0],
     pickable=True
 )
 
-
 # Create a PyDeck map
 map = pdk.Deck(
     map_style="mapbox://styles/mapbox/light-v9",
-    initial_view_state=pdk.ViewState(latitude=41.0082, longitude=28.9784, zoom=10),
+    initial_view_state=pdk.ViewState(latitude=37.452493555, longitude=35.447345028, zoom=10),
     layers=[custom_layer]
 )
 
