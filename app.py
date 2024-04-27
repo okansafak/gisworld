@@ -46,10 +46,7 @@ if secili_kurum_turu != "Tümü":
 if not filtrelenmis_okullar.empty:
     st.write(f"Seçilen filtrelerle toplam {len(filtrelenmis_okullar)} okul bulunmaktadır.")
     
-# İstatistikler kısmını görsel olarak güzelleştir
-
-# İl/ilçe ve okul türü istatistiklerini görsel olarak güncelle
-if not filtrelenmis_okullar.empty:
+    # İl/ilçe ve okul türü istatistikleri
     st.sidebar.subheader("İstatistikler")
     
     if secili_ilce != "Tümü":
@@ -61,8 +58,13 @@ if not filtrelenmis_okullar.empty:
         st.sidebar.metric(label="Seçilen İldeki Toplam Okul Sayısı", value=il_okul_sayisi)
     
     if secili_il != "Tümü":
-        st.sidebar.metric(label="En Fazla Okul Türü", value=en_fazla_okul_sayisi, delta=en_fazla_okul_sayisi)
-        st.sidebar.metric(label="En Az Okul Türü", value=en_az_okul_sayisi, delta=en_az_okul_sayisi)
+        en_fazla_okul_turu = filtrelenmis_okullar["KURUM_TUR_ADI"].value_counts().idxmax()
+        en_fazla_okul_sayisi = filtrelenmis_okullar["KURUM_TUR_ADI"].value_counts().max()
+        st.sidebar.metric(label="En Fazla Okul Türü", value=en_fazla_okul_sayisi, delta=0)
+        
+        en_az_okul_turu = filtrelenmis_okullar["KURUM_TUR_ADI"].value_counts().idxmin()
+        en_az_okul_sayisi = filtrelenmis_okullar["KURUM_TUR_ADI"].value_counts().min()
+        st.sidebar.metric(label="En Az Okul Türü", value=en_az_okul_sayisi, delta=0)
 
     # Grafik: Okul türlerine göre dağılım
     st.subheader("Okul Türü Dağılımı")
