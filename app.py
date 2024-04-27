@@ -1,35 +1,27 @@
 import streamlit as st
 import pandas as pd
+import geopandas as gpd
 import folium
 
-# Veri yükleyici fonksiyon
-@st.cache
-def load_data(file_path):
-    data = pd.read_csv(file_path)
-    return data
+# Başlık
+st.title("GeoJSON Verilerini Harita Üzerinde Görüntüleme")
 
-# Ana uygulama fonksiyonu
-def main():
-    st.title('CBS Harita Uygulaması')
+# GeoJSON dosyasını yükleme
+uploaded_file = st.file_uploader("Lütfen GeoJSON dosyasını yükleyin", type=["geojson"])
 
-    # Veri yükleme
-    file_path = st.file_uploader("Lütfen bir CSV dosyası yükleyin", type=["csv"])
-    if file_path is not None:
-        data = load_data(file_path)
-        st.write(data)
+if uploaded_file is not None:
+    # GeoDataFrame oluşturma
+    gdf = gpd.read_file(uploaded_file)
 
-        # Harita oluşturma
-        st.subheader("Harita Görüntüleme")
-        map_data = data[['Latitude', 'Longitude']] # Varsayılan olarak 'Latitude' ve 'Longitude' sütunlarını kullanıyoruz
-        map_center = [map_data['Latitude'].mean(), map_data['Longitude'].mean()] # Harita merkezini veri noktalarının ortalaması olarak ayarlıyoruz
-        my_map = folium.Map(location=map_center, zoom_start=10)
+    # GeoDataFrame'i görselleştirme
+    st.subheader("GeoJSON Verileri")
+    st.write(gdf)
 
-        # Her veri noktasını haritaya ekleme
-        for index, row in map_data.iterrows():
-            folium.Marker(location=[row['Latitude'], row['Longitude']]).add_to(my_map)
+    # Haritayı oluşturma
+    m = folium.Map(location=[gdf.geometry.centroid.y.mean(), gdf.geometry.centroid.x.mean()], zoom_start=10)
 
-        # Haritayı görüntüleme
-        folium_static(my_map)
+    # GeoDataFrame'i haritaya ekleme
+    folium.GeoJson(gdf).add_to(m)
 
-if __name__ == "__main__":
-    main()
+    # Haritayı görüntüleme
+    folium_static(m)
