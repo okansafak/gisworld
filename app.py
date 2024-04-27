@@ -30,7 +30,7 @@ if uploaded_file is not None:
         get_position=["geometry.coordinates[0]", "geometry.coordinates[1]"],
         opacity=0.8,
         aggregation='"MEAN"',
-        get_weight=1
+        get_weight=0.05
     )
 
     # Haritayı görüntüleme
