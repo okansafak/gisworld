@@ -69,6 +69,13 @@ if not filtrelenmis_okullar.empty:
         en_az_okul_sayisi = filtrelenmis_okullar["KURUM_TUR_ADI"].value_counts().min()
         st.sidebar.markdown(f"**En Az Okul Türü:** {en_az_okul_turu} ({en_az_okul_sayisi} okul)")
 
+        # İstatistiklerin altında daha vurgulu bir şekilde gösterilmesi
+        st.sidebar.markdown("---")
+        st.sidebar.markdown("**İstatistikler**")
+        st.sidebar.markdown(f"Seçilen İldeki Toplam Okul Sayısı: **{il_okul_sayisi}**")
+        st.sidebar.markdown(f"En Fazla Okul Türü: **{en_fazla_okul_turu}** ({en_fazla_okul_sayisi} okul)")
+        st.sidebar.markdown(f"En Az Okul Türü: **{en_az_okul_turu}** ({en_az_okul_sayisi} okul)")
+
 # Grafikler
 st.subheader("Okul Türü Dağılımı")
 okul_turu_dağılımı = filtrelenmis_okullar["KURUM_TUR_ADI"].value_counts()
