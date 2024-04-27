@@ -1,0 +1,18 @@
+import json
+
+def main():
+    # Başvuru bilgileri
+    data = {'Ad Soyad': 'John Doe', 'E-posta': 'johndoe@example.com', 'Telefon': '05551234567',
+            'Linkedin URL': 'https://www.linkedin.com/in/johndoe', 'Üniversite': 'ABC Üniversitesi',
+            'Bölüm': 'Bilgisayar Mühendisliği', 'Sınıf': '4', 'Çalıştığı Kurum': 'XYZ Ltd.',
+            'Programlama Dilleri': ['Python', 'JavaScript'], 'Kullandığı Programlar': ['QGIS', 'PostgreSQL'],
+            'Mesaj': 'Başvuru formunu doldurdum.'}
+
+    # Verileri JSON formatına dönüştür
+    json_data = json.dumps(data, ensure_ascii=False)
+
+    # JSON verilerini yazdır
+    print(json_data)
+
+if __name__ == "__main__":
+    main()
