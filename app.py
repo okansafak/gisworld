@@ -63,20 +63,34 @@ if not filtrelenmis_okullar.empty:
     st.sidebar.title("İstatistikler")
     if secili_ilce != "Tümü":
         ilce_okul_sayisi = len(okullar_gdf[okullar_gdf["ILCE_ADI"] == secili_ilce])
-        st.sidebar.write(f"Seçilen İlçedeki Toplam Okul Sayısı: **{ilce_okul_sayisi}**")
+        st.sidebar.markdown(f"**Seçilen İlçedeki Toplam Okul Sayısı:** {ilce_okul_sayisi}")
+
+        # İlçelerdeki okul sayıları grafik
+        st.sidebar.subheader("İlçelerdeki Okul Sayıları")
+        ilce_okul_sayıları = filtrelenmis_okullar["ILCE_ADI"].value_counts()
+        fig = px.bar(ilce_okul_sayıları, x=ilce_okul_sayıları.index, y=ilce_okul_sayıları.values,
+                     labels={"x": "İlçe", "y": "Okul Sayısı"}, title="İlçelerdeki Okul Sayıları")
+        st.sidebar.plotly_chart(fig, use_container_width=True)
     
     if secili_il != "Tümü":
         il_okul_sayisi = len(okullar_gdf[okullar_gdf["IL_ADI"] == secili_il])
-        st.sidebar.write(f"Seçilen İldeki Toplam Okul Sayısı: **{il_okul_sayisi}**")
-    
+        st.sidebar.markdown(f"**Seçilen İldeki Toplam Okul Sayısı:** {il_okul_sayisi}")
+
     if secili_il != "Tümü":
         en_fazla_okul_turu = filtrelenmis_okullar["KURUM_TUR_ADI"].value_counts().idxmax()
         en_fazla_okul_sayisi = filtrelenmis_okullar["KURUM_TUR_ADI"].value_counts().max()
-        st.sidebar.write(f"En Fazla Okul Türü: **{en_fazla_okul_turu}** ({en_fazla_okul_sayisi} okul)")
-        
+        st.sidebar.markdown(f"**En Fazla Okul Türü:** {en_fazla_okul_turu} ({en_fazla_okul_sayisi} okul)")
+
         en_az_okul_turu = filtrelenmis_okullar["KURUM_TUR_ADI"].value_counts().idxmin()
         en_az_okul_sayisi = filtrelenmis_okullar["KURUM_TUR_ADI"].value_counts().min()
-        st.sidebar.write(f"En Az Okul Türü: **{en_az_okul_turu}** ({en_az_okul_sayisi} okul)")
+        st.sidebar.markdown(f"**En Az Okul Türü:** {en_az_okul_turu} ({en_az_okul_sayisi} okul)")
+
+        # Okul türleri dağılımı grafik
+        st.sidebar.subheader("Okul Türü Dağılımı")
+        okul_turu_dağılımı = filtrelenmis_okullar["KURUM_TUR_ADI"].value_counts()
+        fig = px.pie(okul_turu_dağılımı, values=okul_turu_dağılımı.values, names=okul_turu_dağılımı.index,
+                     title="Okul Türü Dağılımı")
+        st.sidebar.plotly_chart(fig, use_container_width=True)
 
     # Grafikler
     st.subheader("Okul Türü Dağılımı")
