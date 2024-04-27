@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
 import geopandas as gpd
-from keplergl import KeplerGl
+import pydeck as pdk
 
 # Başlık
 st.title("GeoJSON Verilerini Harita Üzerinde Görüntüleme")
@@ -17,9 +17,26 @@ if uploaded_file is not None:
     st.subheader("GeoJSON Verileri")
     st.write(gdf)
 
-    # KeplerGl harita oluşturma
-    map_ = KeplerGl(height=600)
-    map_.add_data(data=gdf, name='geojson_data')
+    # PyDeck harita oluşturma
+    view_state = pdk.ViewState(
+        latitude=gdf.geometry.centroid.y.mean(),
+        longitude=gdf.geometry.centroid.x.mean(),
+        zoom=10
+    )
+
+    layer = pdk.Layer(
+        "GeoJsonLayer",
+        data=gdf,
+        get_fill_color=[0, 255, 0, 100],  # RGB ve alpha değeri
+        get_line_color=[255, 0, 0],
+        lineWidthScale=5,
+        filled=True,
+        stroked=True,
+    )
 
     # Haritayı görüntüleme
-    st.write(map_)
+    st.pydeck_chart(pdk.Deck(
+        map_style="mapbox://styles/mapbox/light-v9",
+        initial_view_state=view_state,
+        layers=[layer],
+    ))
