@@ -10,6 +10,11 @@ with open("okullar.geojson", encoding="utf-8") as f:
 with open("il_ilce_listesi.json", encoding="utf-8") as f:
     il_ilce_listesi = json.load(f)
 
+# Kontrol: İl/ilçe verileri boş mu?
+if not il_ilce_listesi:
+    st.error("İl ve ilçe verisi bulunamadı. Lütfen veri dosyalarını kontrol edin.")
+    st.stop()
+
 # Geopandas DataFrame'i oluştur
 okullar_gdf = gpd.GeoDataFrame.from_features(okullar_geojson["features"])
 
@@ -36,11 +41,6 @@ secili_kurum_turleri = st.sidebar.multiselect("Okul Türü Seçin", list(kurum_t
 
 # Seçilen il ve ilçelere göre okulları filtrele
 filtrelenmis_okullar = okullar_gdf.copy()
-
-if not il_ilce_listesi:
-    st.error("İl ve ilçe verisi bulunamadı. Lütfen veri dosyalarını kontrol edin.")
-    st.stop()
-
 
 if "Tümü" not in secili_iller:
     filtrelenmis_okullar = filtrelenmis_okullar[filtrelenmis_okullar["IL_ADI"].isin(secili_iller)]
