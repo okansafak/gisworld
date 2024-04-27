@@ -19,12 +19,15 @@ st.title("Okul Bilgi Uygulaması")
 # İl seçimini yap
 secili_il = st.selectbox("Lütfen bir il seçin:", list(il_ilce_listesi.keys()))
 
-# İlçe seçimini yap
-secili_ilce = st.selectbox("Lütfen bir ilçe seçin:", il_ilce_listesi[secili_il])
+# "Tümü" seçeneği ekleyerek ilçe seçimini yap
+secili_ilce = st.selectbox("Lütfen bir ilçe seçin:", ["Tümü"] + il_ilce_listesi[secili_il])
 
 # Seçilen il ve ilçeye göre okulları filtrele
-filtrelenmis_okullar = okullar_gdf[(okullar_gdf["IL_ADI"] == secili_il) & 
-                                   (okullar_gdf["ILCE_ADI"] == secili_ilce)]
+if secili_ilce == "Tümü":
+    filtrelenmis_okullar = okullar_gdf[okullar_gdf["IL_ADI"] == secili_il]
+else:
+    filtrelenmis_okullar = okullar_gdf[(okullar_gdf["IL_ADI"] == secili_il) & 
+                                       (okullar_gdf["ILCE_ADI"] == secili_ilce)]
 
 # Filtrelenmiş okulları göster
 if not filtrelenmis_okullar.empty:
