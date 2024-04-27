@@ -35,7 +35,7 @@ else:
 custom_layer = pdk.Layer(
     "ScatterplotLayer",
     data=df_selection,
-    get_position="[properties.geometry.coordinates[1], properties.geometry.coordinates[0]]",
+    get_position="[properties.geometry.coordinates[0], properties.geometry.coordinates[1]]",
     get_radius=200,
     get_fill_color=[255, 0, 0],
     pickable=True
