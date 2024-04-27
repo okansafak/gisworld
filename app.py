@@ -7,27 +7,32 @@ st.set_page_config(page_title="Demo Page",
                    page_icon=":globe_showing_europe_africa:",
                    layout="wide")
 
-# Load the GeoJSON file containing station data
+# Load the GeoJSON file containing school data
 with open("okullar.geojson", "r", encoding="utf-8") as f:
-    station_data = json.load(f)
+    school_data = json.load(f)
 
 # Convert GeoJSON features to DataFrame
-features = station_data["features"]
+features = school_data["features"]
 df = pd.json_normalize(features)
 
-st.sidebar.header("FILTERS")
-ilce = st.sidebar.multiselect(
-    "İlçe Seçiniz",
-    options=df["properties.ILCE_ADI"].unique(),  # Use unique values for options
-    default=None  # Default value is None
-)
+# Extract unique districts for the sidebar filter
+unique_ilce = df["properties.ILCE_ADI"].unique()
 
-# Filter DataFrame based on selected ilce if ilce is not empty
+# Sidebar for filters
+st.sidebar.header("FILTERS")
+il = st.sidebar.selectbox("İl Seçiniz", options=df["properties.IL_ADI"].unique())
+ilce = st.sidebar.multiselect("İlçe Seçiniz", options=unique_ilce)
+
+# Filter DataFrame based on selected ilce and il if they are not empty
 if ilce:
     df_selection = df[df["properties.ILCE_ADI"].isin(ilce)]
+    if il:
+        df_selection = df_selection[df_selection["properties.IL_ADI"] == il]
     st.write("Filtered DataFrame", df_selection)
 else:
     df_selection = df
+    if il:
+        df_selection = df_selection[df_selection["properties.IL_ADI"] == il]
 
 # Define a custom layer for the map
 custom_layer = pdk.Layer(
@@ -51,5 +56,5 @@ st.write("## Map")
 st.pydeck_chart(map)
 
 # Display filtered data if ilce is selected
-if ilce:
+if ilce or il:
     st.write("Filtered DataFrame", df_selection)
