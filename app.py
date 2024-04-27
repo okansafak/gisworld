@@ -43,7 +43,19 @@ if secili_kurum_turu != "Tümü":
 # Filtrelenmiş okulları göster
 if not filtrelenmis_okullar.empty:
     st.write(f"Seçilen filtrelerle toplam {len(filtrelenmis_okullar)} okul bulunmaktadır.")
+    
+    # İl/ilçe ve okul türü istatistikleri
+    st.sidebar.subheader("İstatistikler")
+    st.sidebar.write(f"Seçilen il: **{secili_il}**")
+    st.sidebar.write(f"Seçilen ilçe: **{secili_ilce}**")
+    st.sidebar.write(f"Seçilen okul türü: **{secili_kurum_turu}**")
+    
     # Okulları tablo olarak göster
     st.dataframe(filtrelenmis_okullar.drop(columns='geometry'))  # Geometri sütununu göstermemek için
+    
+    # Grafik: Okul türlerine göre dağılım
+    st.subheader("Okul Türü Dağılımı")
+    okul_turu_dağılımı = filtrelenmis_okullar["KURUM_TUR_ADI"].value_counts()
+    st.bar_chart(okul_turu_dağılımı)
 else:
     st.write("Seçilen filtrelerle okul bulunamadı.")
