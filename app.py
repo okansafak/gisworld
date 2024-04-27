@@ -24,4 +24,4 @@ if uploaded_file is not None:
     folium.GeoJson(gdf).add_to(m)
 
     # Haritayı görüntüleme
-    folium_static(m)
+    st.write(m._repr_html_(), unsafe_allow_html=True)
