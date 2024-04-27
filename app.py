@@ -61,12 +61,12 @@ if not filtrelenmis_okullar.empty:
         en_fazla_okul_turu = filtrelenmis_okullar["KURUM_TUR_ADI"].value_counts().idxmax()
         en_fazla_okul_sayisi = filtrelenmis_okullar["KURUM_TUR_ADI"].value_counts().max()
         st.sidebar.metric(label="En Fazla Okul Türü", value=en_fazla_okul_sayisi, 
-                          secondary_text=f"{en_fazla_okul_turu}")
+                          secondary_text=f"{en_fazla_okul_turu}", delta_color='green')
         
         en_az_okul_turu = filtrelenmis_okullar["KURUM_TUR_ADI"].value_counts().idxmin()
         en_az_okul_sayisi = filtrelenmis_okullar["KURUM_TUR_ADI"].value_counts().min()
         st.sidebar.metric(label="En Az Okul Türü", value=en_az_okul_sayisi, 
-                          secondary_text=f"{en_az_okul_turu}")
+                          secondary_text=f"{en_az_okul_turu}", delta_color='red')
     
     # Grafik: Okul türlerine göre dağılım
     st.subheader("Okul Türü Dağılımı")
