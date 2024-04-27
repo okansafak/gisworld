@@ -1,37 +1,66 @@
 import streamlit as st
+import random
 
-# Function to get file category based on file extension
-def get_category(file_extension):
-    if file_extension in ["dxf", "dwg"]:
-        return "CAD"
-    elif file_extension in ["shp", "geojson", "kml", "kmz"]:
-        return "GIS"
-    elif file_extension in ["las", "laz"]:
-        return "Point Cloud"
-    elif file_extension == "3dtiles":
-        return "3D Data"
-    else:
-        return "Unknown"
+# Yılanın başlangıç konumu
+snake = [(0, 0)]
 
-# Function to display file information
-def display_file_info(file):
-    file_name = file.name
-    file_extension = file_name.split(".")[-1].lower()
-    category = get_category(file_extension)
-    if category == "Unknown":
-        st.error("Unsupported file format.")
-        return
-    else:
-        st.success(f"File uploaded: {file_name}")
-        st.info(f"Category: {category}")
-        st.info(f"File extension: {file_extension}")
+# Yem konumu
+food = (5, 5)
 
-# Başlık
-st.title("Veri Gösterme Uygulaması")
+# Yılanın hareket yönü
+direction = 'right'
 
-# Dosya yükleme
-uploaded_file = st.file_uploader("Lütfen bir dosya yükleyin", type=["dxf", "dwg", "shp", "geojson", "kml", "kmz", "las", "laz", "3dtiles"])
+# Yılanın hareket fonksiyonu
+def move():
+    global snake, direction, food
+    
+    # Yılanın yeni başlangıç pozisyonunu belirle
+    head = snake[0]
+    if direction == 'up':
+        new_head = (head[0], head[1] - 1)
+    elif direction == 'down':
+        new_head = (head[0], head[1] + 1)
+    elif direction == 'left':
+        new_head = (head[0] - 1, head[1])
+    elif direction == 'right':
+        new_head = (head[0] + 1, head[1])
+    
+    # Yılanın yeni başlangıç pozisyonuyla güncelle
+    snake = [new_head] + snake[:-1]
+    
+    # Yılanın yemi yemesi durumu
+    if snake[0] == food:
+        snake.append(snake[-1])
+        food = (random.randint(0, 19), random.randint(0, 19))
 
-# Dosya bilgisi gösterme
-if uploaded_file is not None:
-    display_file_info(uploaded_file)
+# Streamlit uygulamasını oluştur
+st.title('Yılan Oyunu')
+
+# Oyun alanını oluştur
+for i in range(20):
+    for j in range(20):
+        if (i, j) in snake:
+            st.markdown('<span style="color:blue">■</span>', unsafe_allow_html=True)
+        elif (i, j) == food:
+            st.markdown('<span style="color:red">●</span>', unsafe_allow_html=True)
+        else:
+            st.markdown('<span style="color:white">□</span>', unsafe_allow_html=True)
+
+# Yönlendirme düğmelerini oluştur
+st.write('## Yön Tuşları:')
+col1, col2, col3 = st.columns(3)
+with col2:
+    if st.button('⬆️'):
+        direction = 'up'
+with col1:
+    if st.button('⬅️'):
+        direction = 'left'
+with col3:
+    if st.button('➡️'):
+        direction = 'right'
+with col2:
+    if st.button('⬇️'):
+        direction = 'down'
+
+# Oyunu güncelle
+move()
