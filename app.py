@@ -23,11 +23,11 @@ secili_il = st.selectbox("Lütfen bir il seçin:", list(il_ilce_listesi.keys()))
 secili_ilce = st.selectbox("Lütfen bir ilçe seçin:", il_ilce_listesi[secili_il])
 
 # Seçilen il ve ilçeye göre okulları filtrele
-filtrelenmis_okullar = okullar_gdf[(okullar_gdf["properties"]["IL_ADI"] == secili_il) & 
-                                   (okullar_gdf["properties"]["ILCE_ADI"] == secili_ilce)]
+filtrelenmis_okullar = okullar_gdf[(okullar_gdf["IL_ADI"] == secili_il) & 
+                                   (okullar_gdf["ILCE_ADI"] == secili_ilce)]
 
 # Filtrelenmiş okulları göster
-if len(filtrelenmis_okullar) > 0:
+if not filtrelenmis_okullar.empty:
     st.write(f"Seçilen il ve ilçede toplam {len(filtrelenmis_okullar)} okul bulunmaktadır.")
     # Okulları harita üzerinde göster
     st.map(filtrelenmis_okullar)
