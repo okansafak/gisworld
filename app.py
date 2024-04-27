@@ -9,7 +9,7 @@ def main():
     gdf = gpd.read_file("okullar.geojson")
 
     # İstanbul'daki okulları filtrele
-    istanbul_gdf = gdf[gdf['IL_ADI'] == 'İSTANBUL']
+    istanbul_gdf = gdf[gdf['IL_ADI'] == 'KARS']
 
     # Merkezi noktayı hesapla
     center_lat = istanbul_gdf.geometry.centroid.y.mean()
