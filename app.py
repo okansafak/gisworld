@@ -1,100 +1,26 @@
-import json
 import streamlit as st
 import geopandas as gpd
-import pandas as pd
-import plotly.express as px
+import folium
 
+def main():
+    st.title("Okullar Haritası")
 
-# Okullar GeoJSON dosyasını yükle
-with open("okullar.geojson", encoding="utf-8") as f:
-    okullar_geojson = json.load(f)
+    # GeoJSON dosyasını yükle
+    gdf = gpd.read_file("okullar.geojson")
 
-# İl ve ilçe listesi JSON dosyasını yükle
-with open("il_ilce_listesi.json", encoding="utf-8") as f:
-    il_ilce_listesi = json.load(f)
+    # Merkezi noktayı hesapla
+    center_lat = gdf.geometry.centroid.y.mean()
+    center_lon = gdf.geometry.centroid.x.mean()
 
-# Geopandas DataFrame'i oluştur
-okullar_gdf = gpd.GeoDataFrame.from_features(okullar_geojson["features"])
+    # Folium haritası oluştur
+    m = folium.Map(location=[center_lat, center_lon], zoom_start=10, control_scale=True)
 
-# Streamlit uygulamasını oluştur
-st.title("Okul Bilgi Uygulaması")
+    # Okul konumlarını haritaya ekle
+    for idx, row in gdf.iterrows():
+        folium.Marker(location=[row.geometry.y, row.geometry.x], popup=row["Okul Adı"]).add_to(m)
 
-# Filtreler için sidebar oluştur
-st.sidebar.title("Filtreler")
+    # Streamlit ile haritayı görüntüle
+    folium_static(m)
 
-# İl seçimini sidebar'a ekle
-secili_il = st.sidebar.selectbox("İl Seçin", list(il_ilce_listesi.keys()))
-
-# İlçe seçimini sidebar'a ekle
-secili_ilce = st.sidebar.selectbox("İlçe Seçin", ["Tümü"] + il_ilce_listesi[secili_il])
-
-# KURUM_TUR_ADI seçimini sidebar'a ekle
-kurum_turleri = okullar_gdf["KURUM_TUR_ADI"].unique()
-secili_kurum_turu = st.sidebar.selectbox("Okul Türü Seçin", ["Tümü"] + list(kurum_turleri))
-
-# Seçilen il ve ilçeye göre okulları filtrele
-if secili_ilce == "Tümü":
-    filtrelenmis_okullar = okullar_gdf[okullar_gdf["IL_ADI"] == secili_il]
-else:
-    filtrelenmis_okullar = okullar_gdf[(okullar_gdf["IL_ADI"] == secili_il) & 
-                                       (okullar_gdf["ILCE_ADI"] == secili_ilce)]
-
-# KURUM_TUR_ADI'na göre filtrele
-if secili_kurum_turu != "Tümü":
-    filtrelenmis_okullar = filtrelenmis_okullar[filtrelenmis_okullar["KURUM_TUR_ADI"] == secili_kurum_turu]
-
-# Filtrelenmiş okulları göster
-if not filtrelenmis_okullar.empty:
-    st.write(f"Seçilen filtrelerle toplam {len(filtrelenmis_okullar)} okul bulunmaktadır.")
-    
-    # İl/ilçe ve okul türü istatistikleri
-    st.sidebar.subheader("İstatistikler")
-    
-    if secili_ilce != "Tümü":
-        ilce_okul_sayisi = len(okullar_gdf[okullar_gdf["ILCE_ADI"] == secili_ilce])
-        st.sidebar.write(f"Seçilen İlçedeki Toplam Okul Sayısı: **{ilce_okul_sayisi}**")
-    
-    if secili_il != "Tümü":
-        il_okul_sayisi = len(okullar_gdf[okullar_gdf["IL_ADI"] == secili_il])
-        st.sidebar.write(f"Seçilen İldeki Toplam Okul Sayısı: **{il_okul_sayisi}**")
-    
-    if secili_il != "Tümü":
-        en_fazla_okul_turu = filtrelenmis_okullar["KURUM_TUR_ADI"].value_counts().idxmax()
-        en_fazla_okul_sayisi = filtrelenmis_okullar["KURUM_TUR_ADI"].value_counts().max()
-        st.sidebar.write(f"En Fazla Okul Türü: **{en_fazla_okul_turu}** ({en_fazla_okul_sayisi} okul)")
-        
-        en_az_okul_turu = filtrelenmis_okullar["KURUM_TUR_ADI"].value_counts().idxmin()
-        en_az_okul_sayisi = filtrelenmis_okullar["KURUM_TUR_ADI"].value_counts().min()
-        st.sidebar.write(f"En Az Okul Türü: **{en_az_okul_turu}** ({en_az_okul_sayisi} okul)")
-    
-    # Grafik: Okul türlerine göre dağılım
-    st.subheader("Okul Türü Dağılımı")
-    okul_turu_dağılımı = filtrelenmis_okullar["KURUM_TUR_ADI"].value_counts()
-    fig1 = px.bar(okul_turu_dağılımı, x=okul_turu_dağılımı.index, y=okul_turu_dağılımı.values)
-    fig1.update_layout(xaxis_title="Okul Türü", yaxis_title="Okul Sayısı", title="Okul Türü Dağılımı")
-    st.plotly_chart(fig1, use_container_width=True)
-
-    # Grafik: İlçelerdeki okul sayıları
-    st.subheader("İlçelerdeki Okul Sayıları")
-    ilce_okul_sayıları = filtrelenmis_okullar["ILCE_ADI"].value_counts()
-    fig2 = px.bar(ilce_okul_sayıları, x=ilce_okul_sayıları.index, y=ilce_okul_sayıları.values)
-    fig2.update_layout(xaxis_title="İlçe", yaxis_title="Okul Sayısı", title="İlçelerdeki Okul Sayıları")
-    st.plotly_chart(fig2, use_container_width=True)
-
-    # Harita: Okulların konumları
-    st.subheader("Okul Konumları Haritası")
-    fig3 = px.scatter_mapbox(filtrelenmis_okullar, 
-                             lat=filtrelenmis_okullar.geometry.y, 
-                             lon=filtrelenmis_okullar.geometry.x,
-                             hover_name="OKUL_ADI",
-                             hover_data=["KURUM_TUR_ADI", "ILCE_ADI"],
-                             zoom=10)
-    fig3.update_layout(mapbox_style="open-street-map")
-    st.plotly_chart(fig3, use_container_width=True)
-
-    # Okulları tablo olarak göster
-    st.subheader("Filtrelenmiş Okullar")
-    st.dataframe(filtrelenmis_okullar.drop(columns='geometry'))  # Geometri sütununu göstermemek için
-
-else:
-    st.write("Seçilen filtrelerle okul bulunamadı.")
+if __name__ == "__main__":
+    main()
