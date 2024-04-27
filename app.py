@@ -25,13 +25,12 @@ if uploaded_file is not None:
     )
 
     layer = pdk.Layer(
-        "GeoJsonLayer",
+        "HeatmapLayer",
         data=gdf,
-        get_fill_color=[0, 255, 0, 100],  # RGB ve alpha değeri
-        get_line_color=[255, 0, 0],
-        lineWidthScale=5,
-        filled=True,
-        stroked=True,
+        get_position=["geometry.coordinates[0]", "geometry.coordinates[1]"],
+        opacity=0.8,
+        aggregation='"MEAN"',
+        get_weight=1
     )
 
     # Haritayı görüntüleme
