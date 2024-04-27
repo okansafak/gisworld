@@ -63,12 +63,22 @@ if not filtrelenmis_okullar.empty:
     en_az_okul_sayısı = filtrelenmis_okullar["KURUM_TUR_ADI"].value_counts().min()
     st.sidebar.write(f"En az okul türü: **{en_az_okul_turu}** ({en_az_okul_sayısı} okul)")
     
-    # Okulları tablo olarak göster
-    st.dataframe(filtrelenmis_okullar.drop(columns='geometry'))  # Geometri sütununu göstermemek için
-
-     # Grafik: Okul türlerine göre dağılım
+    # Grafik: Okul türlerine göre dağılım
     st.subheader("Okul Türü Dağılımı")
     okul_turu_dağılımı = filtrelenmis_okullar["KURUM_TUR_ADI"].value_counts()
     st.bar_chart(okul_turu_dağılımı)
+
+    # Grafik: İl/ilçe ve okul türlerine göre okul sayısı
+    st.subheader("İl/İlçe ve Okul Türlerine Göre Okul Sayısı")
+    okul_sayısı_grafik = filtrelenmis_okullar.groupby(["IL_ADI", "ILCE_ADI", "KURUM_TUR_ADI"]).size().unstack()
+    st.bar_chart(okul_sayısı_grafik)
+
+    # Grafik: İlçelerdeki okul sayıları
+    st.subheader("İlçelerdeki Okul Sayıları")
+    ilce_okul_sayıları = filtrelenmis_okullar["ILCE_ADI"].value_counts()
+    st.bar_chart(ilce_okul_sayıları)
+
+    # Okulları tablo olarak göster
+    st.dataframe(filtrelenmis_okullar.drop(columns='geometry'))  # Geometri sütununu göstermemek için
 else:
     st.write("Seçilen filtrelerle okul bulunamadı.")
