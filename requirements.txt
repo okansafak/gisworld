@@ -1,4 +1,5 @@
 geopandas
 folium
 openpyxl
-streamlit_folium
+streamlit_foliums
+streamlit-leaflet
