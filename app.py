@@ -29,7 +29,7 @@ filtrelenmis_okullar = okullar_gdf[(okullar_gdf["IL_ADI"] == secili_il) &
 # Filtrelenmiş okulları göster
 if not filtrelenmis_okullar.empty:
     st.write(f"Seçilen il ve ilçede toplam {len(filtrelenmis_okullar)} okul bulunmaktadır.")
-    # Okulları harita üzerinde göster
-    st.map(filtrelenmis_okullar)
+    # Okulları tablo olarak göster
+    st.dataframe(filtrelenmis_okullar.drop(columns='geometry'))  # Geometri sütununu göstermemek için
 else:
     st.write("Seçilen il ve ilçeye ait okul bulunamadı.")
