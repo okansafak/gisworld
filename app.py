@@ -1,36 +1,42 @@
 import streamlit as st
+from streamlit.components.v1 import html
+
+def openlayers_map(html_code):
+    """
+    OpenLayers haritasını göstermek için HTML kodunu içeren bir fonksiyon.
+    """
+    html_code_with_width = f'<div style="width: 100%; height: 500px;">{html_code}</div>'
+    html(html_code_with_width)
 
 def main():
-    st.title("Okullar Haritası")
+    st.title("OpenLayers Harita Uygulaması")
 
-    # OpenLayers harita kodu
+    # OpenLayers haritası için gerekli JavaScript kodu
     openlayers_html = """
-    <div id="map" style="width: 100%; height: 500px;"></div>
-    <script src="https://cdn.jsdelivr.net/npm/ol@6.5.0/dist/ol.js"></script>
+    <div id="map" class="map"></div>
     <script>
-        var map = new ol.Map({
-            target: 'map',
+        import Map from 'ol/Map.js';
+        import View from 'ol/View.js';
+        import TileLayer from 'ol/layer/Tile.js';
+        import OSM from 'ol/source/OSM.js';
+
+        var map = new Map({
             layers: [
-                new ol.layer.Tile({
-                    source: new ol.source.OSM()
-                }),
-                new ol.layer.Vector({
-                    source: new ol.source.Vector({
-                        url: 'okullar.geojson',
-                        format: new ol.format.GeoJSON()
-                    })
+                new TileLayer({
+                    source: new OSM()
                 })
             ],
-            view: new ol.View({
-                center: ol.proj.fromLonLat([35.447345028, 37.452493555]),
-                zoom: 10
+            target: 'map',
+            view: new View({
+                center: [0, 0],
+                zoom: 2
             })
         });
     </script>
     """
 
-    # OpenLayers haritasını göster
-    st.markdown(openlayers_html, unsafe_allow_html=True)
+    # OpenLayers haritasını Streamlit üzerinde göster
+    openlayers_map(openlayers_html)
 
 if __name__ == "__main__":
     main()
