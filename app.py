@@ -37,6 +37,11 @@ secili_kurum_turleri = st.sidebar.multiselect("Okul Türü Seçin", list(kurum_t
 # Seçilen il ve ilçelere göre okulları filtrele
 filtrelenmis_okullar = okullar_gdf.copy()
 
+if not il_ilce_listesi:
+    st.error("İl ve ilçe verisi bulunamadı. Lütfen veri dosyalarını kontrol edin.")
+    st.stop()
+
+
 if "Tümü" not in secili_iller:
     filtrelenmis_okullar = filtrelenmis_okullar[filtrelenmis_okullar["IL_ADI"].isin(secili_iller)]
 
