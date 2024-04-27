@@ -1,8 +1,7 @@
 import streamlit as st
 import pandas as pd
 import geopandas as gpd
-from streamlit_folium import folium_static
-import folium
+from keplergl import KeplerGl
 
 # Başlık
 st.title("GeoJSON Verilerini Harita Üzerinde Görüntüleme")
@@ -18,12 +17,9 @@ if uploaded_file is not None:
     st.subheader("GeoJSON Verileri")
     st.write(gdf)
 
-    # Haritayı oluşturma
-    m = folium.Map(location=[gdf.geometry.centroid.y.mean(), gdf.geometry.centroid.x.mean()], zoom_start=10)
-
-    # GeoDataFrame'i haritaya ekleme
-    for _, row in gdf.iterrows():
-        folium.GeoJson(row.geometry).add_to(m)
+    # KeplerGl harita oluşturma
+    map_ = KeplerGl(height=600)
+    map_.add_data(data=gdf, name='geojson_data')
 
     # Haritayı görüntüleme
-    folium_static(m)
+    st.write(map_)
