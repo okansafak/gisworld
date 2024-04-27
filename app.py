@@ -65,5 +65,10 @@ if not filtrelenmis_okullar.empty:
     
     # Okulları tablo olarak göster
     st.dataframe(filtrelenmis_okullar.drop(columns='geometry'))  # Geometri sütununu göstermemek için
+
+     # Grafik: Okul türlerine göre dağılım
+    st.subheader("Okul Türü Dağılımı")
+    okul_turu_dağılımı = filtrelenmis_okullar["KURUM_TUR_ADI"].value_counts()
+    st.bar_chart(okul_turu_dağılımı)
 else:
     st.write("Seçilen filtrelerle okul bulunamadı.")
