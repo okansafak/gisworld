@@ -20,25 +20,31 @@ st.title("Okul Bilgi Uygulaması")
 st.sidebar.title("Filtreler")
 
 # İl seçimini sidebar'a ekle
-secili_il = st.sidebar.selectbox("İl Seçin", list(il_ilce_listesi.keys()))
+secili_iller = st.sidebar.multiselect("İl Seçin", list(il_ilce_listesi.keys()), ["Tümü"])
+
+# Seçilen illere göre ilçe listesini hazırla
+secili_ilceler = []
+for il in secili_iller:
+    secili_ilceler.extend(il_ilce_listesi.get(il, []))
 
 # İlçe seçimini sidebar'a ekle
-secili_ilce = st.sidebar.selectbox("İlçe Seçin", ["Tümü"] + il_ilce_listesi[secili_il])
+secili_ilce = st.sidebar.selectbox("İlçe Seçin", ["Tümü"] + secili_ilceler)
 
 # KURUM_TUR_ADI seçimini sidebar'a ekle
 kurum_turleri = okullar_gdf["KURUM_TUR_ADI"].unique()
-secili_kurum_turu = st.sidebar.selectbox("Okul Türü Seçin", ["Tümü"] + list(kurum_turleri))
+secili_kurum_turleri = st.sidebar.multiselect("Okul Türü Seçin", list(kurum_turleri), ["Tümü"])
 
-# Seçilen il ve ilçeye göre okulları filtrele
-if secili_ilce == "Tümü":
-    filtrelenmis_okullar = okullar_gdf[okullar_gdf["IL_ADI"] == secili_il]
-else:
-    filtrelenmis_okullar = okullar_gdf[(okullar_gdf["IL_ADI"] == secili_il) & 
-                                       (okullar_gdf["ILCE_ADI"] == secili_ilce)]
+# Seçilen il ve ilçelere göre okulları filtrele
+filtrelenmis_okullar = okullar_gdf.copy()
 
-# KURUM_TUR_ADI'na göre filtrele
-if secili_kurum_turu != "Tümü":
-    filtrelenmis_okullar = filtrelenmis_okullar[filtrelenmis_okullar["KURUM_TUR_ADI"] == secili_kurum_turu]
+if "Tümü" not in secili_iller:
+    filtrelenmis_okullar = filtrelenmis_okullar[filtrelenmis_okullar["IL_ADI"].isin(secili_iller)]
+
+if secili_ilce != "Tümü":
+    filtrelenmis_okullar = filtrelenmis_okullar[filtrelenmis_okullar["ILCE_ADI"] == secili_ilce]
+
+if "Tümü" not in secili_kurum_turleri:
+    filtrelenmis_okullar = filtrelenmis_okullar[filtrelenmis_okullar["KURUM_TUR_ADI"].isin(secili_kurum_turleri)]
 
 # Filtrelenmiş okulları göster
 if not filtrelenmis_okullar.empty:
