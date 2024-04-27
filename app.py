@@ -57,7 +57,7 @@ if not filtrelenmis_okullar.empty:
         il_okul_sayisi = len(okullar_gdf[okullar_gdf["IL_ADI"] == secili_il])
         st.sidebar.write(f"Seçilen İldeki Toplam Okul Sayısı: **{il_okul_sayisi}**")
     
-    if secili_kurum_turu != "Tümü":
+    if secili_il != "Tümü":
         en_fazla_okul_turu = filtrelenmis_okullar["KURUM_TUR_ADI"].value_counts().idxmax()
         en_fazla_okul_sayisi = filtrelenmis_okullar["KURUM_TUR_ADI"].value_counts().max()
         st.sidebar.write(f"En Fazla Okul Türü: **{en_fazla_okul_turu}** ({en_fazla_okul_sayisi} okul)")
