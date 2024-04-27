@@ -5,8 +5,6 @@ import pandas as pd
 import plotly.express as px
 
 
-
-
 # Okullar GeoJSON dosyasını yükle
 with open("okullar.geojson", encoding="utf-8") as f:
     okullar_geojson = json.load(f)
@@ -83,7 +81,20 @@ if not filtrelenmis_okullar.empty:
     fig2.update_layout(xaxis_title="İlçe", yaxis_title="Okul Sayısı", title="İlçelerdeki Okul Sayıları")
     st.plotly_chart(fig2, use_container_width=True)
 
+    # Harita: Okulların konumları
+    st.subheader("Okul Konumları Haritası")
+    fig3 = px.scatter_mapbox(filtrelenmis_okullar, 
+                             lat=filtrelenmis_okullar.geometry.y, 
+                             lon=filtrelenmis_okullar.geometry.x,
+                             hover_name="OKUL_ADI",
+                             hover_data=["KURUM_TUR_ADI", "ILCE_ADI"],
+                             zoom=10)
+    fig3.update_layout(mapbox_style="open-street-map")
+    st.plotly_chart(fig3, use_container_width=True)
+
     # Okulları tablo olarak göster
+    st.subheader("Filtrelenmiş Okullar")
     st.dataframe(filtrelenmis_okullar.drop(columns='geometry'))  # Geometri sütununu göstermemek için
+
 else:
     st.write("Seçilen filtrelerle okul bulunamadı.")
