@@ -72,17 +72,18 @@ if not filtrelenmis_okullar.empty:
 # Grafikler
 st.subheader("Okul Türü Dağılımı")
 okul_turu_dağılımı = filtrelenmis_okullar["KURUM_TUR_ADI"].value_counts()
-fig1 = px.bar(okul_turu_dağılımı, x=okul_turu_dağılımı.index, y=okul_turu_dağılımı.values)
-fig1.update_layout(xaxis_title="Okul Türü", yaxis_title="Okul Sayısı", title="Okul Türü Dağılımı")
+fig1 = px.bar(okul_turu_dağılımı, x=okul_turu_dağılımı.index, y=okul_turu_dağılımı.values,
+              labels={"x": "Okul Türü", "y": "Okul Sayısı"}, title="Okul Türü Dağılımı")
 st.plotly_chart(fig1, use_container_width=True)
 
 st.subheader("İlçelerdeki Okul Sayıları")
 ilce_okul_sayıları = filtrelenmis_okullar["ILCE_ADI"].value_counts()
-fig2 = px.bar(ilce_okul_sayıları, x=ilce_okul_sayıları.index, y=ilce_okul_sayıları.values)
-fig2.update_layout(xaxis_title="İlçe", yaxis_title="Okul Sayısı", title="İlçelerdeki Okul Sayıları")
+fig2 = px.bar(ilce_okul_sayıları, x=ilce_okul_sayıları.index, y=ilce_okul_sayıları.values,
+              labels={"x": "İlçe", "y": "Okul Sayısı"}, title="İlçelerdeki Okul Sayıları")
 st.plotly_chart(fig2, use_container_width=True)
 
 # Okulları tablo olarak göster
+st.subheader("Filtrelenmiş Okullar")
 st.dataframe(filtrelenmis_okullar.drop(columns='geometry'))  # Geometri sütununu göstermemek için
 
 if filtrelenmis_okullar.empty:
